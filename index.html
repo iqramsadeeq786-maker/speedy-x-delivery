@@ -1,91 +1,178 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Speedy X Admin</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Speedy X Delivery | Admin</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font:15px system-ui;background:#f3f6fb;color:#17243a}header{background:#10233f;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}.brand{font-weight:800}small{display:block;color:#c4d2e5}select,button,input{padding:10px;border:1px solid #dce3ed;border-radius:9px;font:inherit}button{background:#246bfe;color:white;border:0;font-weight:650}header select{max-width:120px}.layout{display:flex;min-height:90vh}nav{width:190px;background:white;padding:10px;border-right:1px solid #e2e8f0}nav button{display:block;width:100%;text-align:left;background:white;color:#40516a;margin:4px 0}nav button.active{background:#eaf1ff;color:#1556d8}main{padding:20px;width:100%}h1{margin:0 0 5px;font-size:25px}.muted{color:#718096;margin-bottom:18px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card,.panel{background:white;border:1px solid #e2e8f0;border-radius:13px;padding:16px;margin-bottom:15px}.metric{font-size:25px;font-weight:800;margin:8px 0}.muted2{color:#718096;font-size:13px}.pill{background:#e9f2ff;color:#2459bb;border-radius:20px;padding:5px 9px;font-size:12px}.green{background:#e4f7ed;color:#11794f}.orange{background:#fff1dc;color:#9a5700}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:620px}td,th{text-align:start;padding:11px;border-bottom:1px solid #edf0f5;font-size:13px}th{color:#718096}.hidden{display:none}.map{padding:45px 20px;text-align:center;border:1px dashed #9eb1ca;border-radius:12px;background:#f4f8ff;color:#526985}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}footer{text-align:center;color:#7b8798;padding:15px;font-size:12px}[dir=rtl]nav{border-right:0;border-left:1px solid #e2e8f0}[dir=rtl]nav button{text-align:right}
-@media(max-width:750px){.layout{display:block}nav{width:100%;display:flex;overflow:auto;border-right:0;border-bottom:1px solid #ddd}nav button{width:auto;white-space:nowrap}.cards{grid-template-columns:repeat(2,1fr)}main{padding:12px}}
+:root{--navy:#14213d;--blue:#2563eb;--bg:#f3f6fb;--line:#dce3ee;--muted:#64748b}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#172033}
+header{background:var(--navy);color:white;padding:18px 16px}header h1{margin:0;font-size:21px}header p{margin:6px 0 0;color:#cbd5e1;font-size:13px}
+main{max-width:1000px;margin:22px auto;padding:0 14px}.card{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 3px 12px #1720330b}
+h2{font-size:19px;margin:0 0 14px}.small{font-size:13px;color:var(--muted)}label{display:block;font-size:13px;font-weight:bold;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font-size:15px;background:white}
+textarea{min-height:70px}button{border:0;border-radius:9px;background:var(--blue);color:white;padding:12px 16px;font-size:15px;font-weight:bold;cursor:pointer;margin-top:14px}
+button.secondary{background:#475569}button:disabled{opacity:.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.hidden{display:none!important}.status{padding:11px;border-radius:9px;margin-top:12px;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+.info{background:#eff6ff;color:#1e40af}.err{background:#fef2f2;color:#991b1b}.ok{background:#ecfdf5;color:#065f46}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}nav button{margin:0;background:#e2e8f0;color:#172033}nav button.active{background:var(--blue);color:white}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#f8fafc}
+.tablewrap{overflow-x:auto}.pill{display:inline-block;background:#e0e7ff;color:#3730a3;padding:4px 8px;border-radius:20px}
+#debug{font-family:monospace;font-size:12px}
+</style>
+</head>
+<body>
+<header><h1>Speedy X Delivery</h1><p>Admin Panel · Real Orders · AED</p></header>
+<main>
+<section id="loginCard" class="card">
+<h2>Admin Login</h2>
+<p class="small">Sign in with your Firebase administrator account.</p>
+<label>Email</label><input id="email" type="email" autocomplete="username" placeholder="Admin email">
+<label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password">
+<button id="loginBtn" onclick="login()">Login</button>
+<div id="loginStatus" class="status info">Ready to sign in.</div>
+<p class="small">If login fails, the exact Firebase error will appear here. Do not share your password.</p>
+</section>
 
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#f3f6fb}
-.login-card{width:100%;max-width:420px;background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:24px;box-shadow:0 12px 35px #10233f12}
-.login-card h1{margin-bottom:6px}.login-card input{width:100%;margin:8px 0 12px}.login-card button{width:100%;padding:12px}.login-error{color:#b42318;background:#fff0ef;padding:10px;border-radius:8px;margin:10px 0;font-size:13px}.login-note{font-size:12px;color:#718096;margin-top:14px}.app-hidden{display:none!important}
-</style></head><body>
-<div id="loginScreen" class="login-wrap">
- <div class="login-card">
-  <div style="font-size:34px">🚚</div>
-  <h1>Speedy X Admin</h1>
-  <div class="muted">Secure administrator sign in</div>
-  <form id="loginForm">
-   <label for="adminEmail">Admin email</label>
-   <input id="adminEmail" type="email" autocomplete="username" value="iqramsadeeq786@gmail.com" required>
-   <label for="adminPassword">Password</label>
-   <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Enter your password" required>
-   <div id="loginError" class="login-error hidden" role="alert"></div>
-   <button id="loginButton" type="submit">Sign in</button>
-  </form>
-  <div class="login-note">Only the authorized Speedy X administrator can sign in. Never share your password.</div>
- </div>
+<section id="app" class="hidden">
+<div class="card">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+<div><h2 style="margin-bottom:4px">Admin Dashboard</h2><div class="small" id="who"></div></div>
+<button class="secondary" onclick="logout()">Logout</button>
 </div>
-<div id="appShell" class="app-hidden">
-
-<header><div class="brand">🚚 SPEEDY X<small>DELIVERY SERVICE · ADMIN</small></div><select id="lang"><option value="en">English</option><option value="ar">العربية</option></select><button id="logoutButton" type="button" style="margin-left:8px;background:#d94b4b">Logout</button></header>
-<div class="layout"><nav id="nav">
-<button class="active" data-page="dash">▦ <span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span></button>
-<button data-page="orders">▤ <span data-en="Orders" data-ar="الطلبات">Orders</span></button>
-<button data-page="riders">🛵 <span data-en="Riders" data-ar="السائقون">Riders</span></button>
-<button data-page="customers">♙ <span data-en="Customers" data-ar="العملاء">Customers</span></button>
-<button data-page="sales">▥ <span data-en="Sales & Reports" data-ar="المبيعات والتقارير">Sales & Reports</span></button>
-<button data-page="gps">⌖ <span data-en="Live GPS" data-ar="التتبع المباشر">Live GPS</span></button>
-</nav><main>
-<section id="dash"><h1 data-en="Welcome to Speedy X" data-ar="مرحباً بك في Speedy X">Welcome to Speedy X</h1><div class="muted" data-en="Delivery operations overview" data-ar="نظرة عامة على عمليات التوصيل">Delivery operations overview</div>
-<div class="cards"><div class="card"><div class="muted2" data-en="Total orders" data-ar="إجمالي الطلبات">Total orders</div><div class="metric">128</div><span class="pill green">This month</span></div><div class="card"><div class="muted2" data-en="Active riders" data-ar="السائقون النشطون">Active riders</div><div class="metric">12</div><span class="pill green">On duty</span></div><div class="card"><div class="muted2" data-en="Customers" data-ar="العملاء">Customers</div><div class="metric">346</div><span class="pill">Registered</span></div><div class="card"><div class="muted2" data-en="COD pending" data-ar="الدفع عند الاستلام المعلق">COD pending</div><div class="metric">AED 2,840</div><span class="pill orange">To collect</span></div></div>
-<div class="panel"><h3 data-en="Recent orders" data-ar="أحدث الطلبات">Recent orders</h3><div class="tablewrap"><table><thead><tr><th>ID</th><th>Customer</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody id="recent"></tbody></table></div></div>
-<div class="panel"><h3 data-en="Live tracking" data-ar="التتبع المباشر">Live tracking</h3><div class="map">📍<br>Live GPS will work after the rider app and location permissions are connected.</div></div></section>
-<section id="orders" class="hidden"><h1 data-en="Orders" data-ar="الطلبات">Orders</h1><div class="muted">Manage deliveries · إدارة التوصيل</div><div class="panel"><div class="row"><input id="search" placeholder="Search"><button id="add">+ Add demo order</button></div><div class="tablewrap"><table><thead><tr><th>ID</th><th>Customer</th><th>Type</th><th>Amount</th><th>Payment</th><th>Status</th><th>Update</th></tr></thead><tbody id="allorders"></tbody></table></div><p class="muted2">Sample records only. Firebase connection is not configured yet.</p></div></section>
-<section id="riders" class="hidden"><h1>Riders / السائقون</h1><div class="panel"><table><tr><th>Name</th><th>Phone</th><th>Status</th><th>Deliveries</th></tr><tr><td>Ahmed R.</td><td>+971 50 *** 214</td><td><span class="pill green">Active</span></td><td>42</td></tr><tr><td>Omar K.</td><td>+971 55 *** 781</td><td><span class="pill orange">Offline</span></td><td>28</td></tr></table><p class="muted2">Demo riders only. Real rider accounts need secure registration and app integration.</p></div></section>
-<section id="customers" class="hidden"><h1>Customers / العملاء</h1><div class="panel"><table><tr><th>Name</th><th>Phone</th><th>Orders</th></tr><tr><td>Sample Customer</td><td>+971 5* *** 091</td><td>8</td></tr><tr><td>Sample Customer 2</td><td>+971 5* *** 427</td><td>3</td></tr></table><p class="muted2">Real customer data loads after Firebase Authentication and Firestore integration.</p></div></section>
-<section id="sales" class="hidden"><h1>Sales & Reports / المبيعات والتقارير</h1><div class="cards"><div class="card">Gross revenue<div class="metric">AED 8,460</div></div><div class="card">COD collected<div class="metric">AED 5,620</div></div><div class="card">COD pending<div class="metric">AED 2,840</div></div><div class="card">Completed<div class="metric">96</div></div></div><p class="muted2">Illustrative figures only, not live financial data.</p></section>
-<section id="gps" class="hidden"><h1>Live GPS / التتبع المباشر</h1><div class="panel map">📍<br>Live rider locations require the rider app, GPS permission, and Firebase integration.</div></section>
-</main></div><footer>Speedy X Delivery · Admin prototype · Sample data only</footer>
+<div id="appStatus" class="status info">Connecting to Firestore…</div>
 </div>
+<nav>
+<button class="active" id="ordersTab" onclick="showTab('orders')">Orders</button>
+<button id="newTab" onclick="showTab('new')">+ New Order</button>
+</nav>
+<section id="ordersSection" class="card">
+<h2>Orders</h2>
+<p class="small">Orders saved in your Firebase Firestore database.</p>
+<div class="tablewrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead><tbody id="ordersBody"><tr><td colspan="5">Loading orders…</td></tr></tbody></table></div>
+</section>
+<section id="newSection" class="card hidden">
+<h2>Create New Order</h2>
+<div class="grid">
+<div><label>Customer name *</label><input id="customerName" placeholder="Customer name"></div>
+<div><label>Phone *</label><input id="phone" type="tel" placeholder="+971..."></div>
+<div><label>Delivery address *</label><input id="address" placeholder="Area, building, flat"></div>
+<div><label>Order type</label><select id="orderType"><option>Parcel</option><option>Food</option><option>Shopping</option><option>Documents</option><option>Other</option></select></div>
+<div><label>Amount (AED) *</label><input id="amount" type="number" min="0" step="0.01" placeholder="0.00"></div>
+<div><label>Payment</label><select id="payment"><option>COD</option><option>Card</option><option>Paid</option></select></div>
+</div>
+<label>Notes</label><textarea id="notes" placeholder="Optional order notes"></textarea>
+<button id="saveBtn" onclick="createOrder()">Save Real Order</button>
+<div id="createStatus" class="status info hidden"></div>
+</section>
+</section>
+</main>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyD6FoArUPciWXsclfAS6Tc1gDidxLxqN8w",
-  authDomain: "speedy-x-delivery.firebaseapp.com",
-  projectId: "speedy-x-delivery",
-  storageBucket: "speedy-x-delivery.firebasestorage.app",
-  messagingSenderId: "596204928792",
-  appId: "1:596204928792:web:781540d8a4b267b7a9a86d"
+ apiKey: "AIzaSyD6FoArUPciWXsclfAS6Tc1gDidxLxqN8w",
+ authDomain: "speedy-x-delivery.firebaseapp.com",
+ projectId: "speedy-x-delivery",
+ storageBucket: "speedy-x-delivery.firebasestorage.app",
+ messagingSenderId: "596204928792",
+ appId: "1:596204928792:web:781540d8a4b267b7a9a86d"
 };
-const ADMIN_EMAIL = "iqramsadeeq786@gmail.com";
 const ADMIN_UID = "dsRl41rCcCZVpOfuxy4z5yJUNKZ2";
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const loginScreen=document.getElementById("loginScreen");
-const appShell=document.getElementById("appShell");
-const loginError=document.getElementById("loginError");
-function showLoginError(message){loginError.textContent=message;loginError.classList.remove("hidden");}
+const ADMIN_EMAIL = "iqramsadeeq786@gmail.com";
+let auth, db, unsubscribeOrders = null;
+const $ = id => document.getElementById(id);
+function showStatus(id,msg,type="info"){const el=$(id);el.className="status "+type;el.textContent=msg;el.classList.remove("hidden")}
+function friendlyError(e){
+ const code=e && e.code ? e.code : "unknown";
+ const msg=e && e.message ? e.message : String(e);
+ const hints={
+ "auth/unauthorized-domain":"This website domain is not authorized in Firebase Authentication → Settings → Authorized domains.",
+ "auth/invalid-api-key":"Firebase API key is invalid. Check the Firebase Web App configuration.",
+ "auth/invalid-credential":"Email or password is incorrect. Check the credentials and try again.",
+ "auth/user-not-found":"No Firebase user exists for this email.",
+ "auth/wrong-password":"Incorrect password.",
+ "auth/network-request-failed":"Network error. Check internet connection and reload.",
+ "permission-denied":"Firestore denied access. Check Firestore Rules and make sure the signed-in UID is the admin UID.",
+ "unavailable":"Firestore is temporarily unavailable. Check internet and retry."
+ };
+ return "Error code: "+code+"\n"+(hints[code]||msg)+"\nDetails: "+msg;
+}
+try{
+ if(!window.firebase) throw new Error("Firebase SDK did not load. Check internet connection or content blockers.");
+ firebase.initializeApp(firebaseConfig);
+ auth=firebase.auth(); db=firebase.firestore();
+ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(e=>console.warn("Persistence:",e));
+}catch(e){showStatus("loginStatus","Firebase setup error:\n"+e.message,"err")}
+function login(){
+ const email=$("email").value.trim(), password=$("password").value;
+ if(!email||!password){showStatus("loginStatus","Enter your email and password.","err");return}
+ const btn=$("loginBtn");btn.disabled=true;btn.textContent="Signing in…";
+ showStatus("loginStatus","Contacting Firebase Authentication…");
+ let finished=false;
+ const timer=setTimeout(()=>{if(!finished){btn.disabled=false;btn.textContent="Login";showStatus("loginStatus","Login is taking too long. Check internet, Firebase Authorized domains, and that the Firebase SDK loaded. Reload the page and try again.","err")}},15000);
+ auth.signInWithEmailAndPassword(email,password).then(async cred=>{
+  finished=true;clearTimeout(timer);
+  if(cred.user.uid!==ADMIN_UID || cred.user.email.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){
+   await auth.signOut();throw {code:"auth/admin-not-authorized",message:"This account is not the configured administrator account."};
+  }
+  showApp(cred.user);
+ }).catch(e=>{finished=true;clearTimeout(timer);btn.disabled=false;btn.textContent="Login";showStatus("loginStatus",friendlyError(e),"err")});
+}
+function showApp(user){
+ $("loginCard").classList.add("hidden");$("app").classList.remove("hidden");
+ $("who").textContent="Signed in as "+user.email;
+ showStatus("appStatus","Signed in. Connecting to Firestore…");
+ listenOrders();
+}
+function logout(){if(unsubscribeOrders){unsubscribeOrders();unsubscribeOrders=null}auth.signOut().then(()=>{ $("app").classList.add("hidden");$("loginCard").classList.remove("hidden");$("password").value="";showStatus("loginStatus","Signed out.","info")}).catch(e=>showStatus("appStatus",friendlyError(e),"err"))}
 auth.onAuthStateChanged(user=>{
- if(user && user.uid===ADMIN_UID && (user.email||"").toLowerCase()===ADMIN_EMAIL){loginScreen.classList.add("app-hidden");appShell.classList.remove("app-hidden");}
- else {appShell.classList.add("app-hidden");loginScreen.classList.remove("app-hidden");if(user){auth.signOut();showLoginError("This account is not authorized for the Admin Panel.");}}
+ if(!user)return;
+ if(user.uid===ADMIN_UID && user.email && user.email.toLowerCase()===ADMIN_EMAIL.toLowerCase())showApp(user);
+ else auth.signOut();
 });
-document.getElementById("loginForm").addEventListener("submit",async e=>{
- e.preventDefault();loginError.classList.add("hidden");
- const email=document.getElementById("adminEmail").value.trim().toLowerCase();
- const password=document.getElementById("adminPassword").value;
- if(email!==ADMIN_EMAIL){showLoginError("This email is not authorized for Admin access.");return;}
- const btn=document.getElementById("loginButton");btn.disabled=true;btn.textContent="Signing in…";
- try{await auth.signInWithEmailAndPassword(email,password);}
- catch(err){showLoginError(err.code==="auth/invalid-credential"||err.code==="auth/wrong-password"||err.code==="auth/user-not-found"?"Incorrect email or password.":"Sign-in failed: "+err.message);}
- finally{btn.disabled=false;btn.textContent="Sign in";document.getElementById("adminPassword").value="";}
-});
-document.getElementById("logoutButton").addEventListener("click",()=>auth.signOut());
+function showTab(tab){
+ $("ordersSection").classList.toggle("hidden",tab!=="orders");
+ $("newSection").classList.toggle("hidden",tab!=="new");
+ $("ordersTab").classList.toggle("active",tab==="orders");
+ $("newTab").classList.toggle("active",tab==="new");
+}
+function listenOrders(){
+ if(unsubscribeOrders)unsubscribeOrders();
+ unsubscribeOrders=db.collection("orders").orderBy("createdAt","desc").limit(100).onSnapshot(snapshot=>{
+  $("ordersBody").innerHTML="";
+  if(snapshot.empty){$("ordersBody").innerHTML='<tr><td colspan="5">No orders yet. Create your first real order.</td></tr>'}
+  snapshot.forEach(doc=>{
+   const d=doc.data(),tr=document.createElement("tr");
+   const td=(v)=>{const x=document.createElement("td");x.textContent=v??"";return x};
+   tr.append(td(d.orderNumber||doc.id),td((d.customerName||"")+" · "+(d.phone||"")),td("AED "+Number(d.amount||0).toFixed(2)),td(d.payment||""),document.createElement("td"));
+   const statusCell=tr.lastChild,sel=document.createElement("select");
+   ["Processing","Confirmed","Packed","Shipped","Out for Delivery","Delivered","Completed","Cancelled","Returned"].forEach(s=>{let o=document.createElement("option");o.value=s;o.textContent=s;sel.appendChild(o)});
+   sel.value=d.status||"Processing";sel.onchange=()=>updateStatus(doc.id,sel.value,sel);
+   statusCell.appendChild(sel);$("ordersBody").appendChild(tr);
+  });
+  showStatus("appStatus","Firestore connected · "+snapshot.size+" order(s) loaded.","ok");
+ },e=>showStatus("appStatus","Firestore read error:\n"+friendlyError(e),"err"));
+}
+async function createOrder(){
+ const customerName=$("customerName").value.trim(),phone=$("phone").value.trim(),address=$("address").value.trim(),amount=Number($("amount").value);
+ if(!customerName||!phone||!address||$("amount").value===""||!Number.isFinite(amount)||amount<0){showStatus("createStatus","Please complete customer name, phone, address and a valid amount.","err");return}
+ const btn=$("saveBtn");btn.disabled=true;btn.textContent="Saving…";
+ try{
+  const ref=db.collection("orders").doc();
+  const orderNumber="SX-"+Date.now().toString().slice(-8);
+  await ref.set({orderNumber,customerName,phone,address,orderType:$("orderType").value,amount,payment:$("payment").value,notes:$("notes").value.trim(),status:"Processing",createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:auth.currentUser.uid,currency:"AED"});
+  showStatus("createStatus","Order saved successfully: "+orderNumber,"ok");
+  ["customerName","phone","address","amount","notes"].forEach(id=>$(id).value="");
+  showTab("orders");
+ }catch(e){showStatus("createStatus","Could not save order:\n"+friendlyError(e),"err")}
+ finally{btn.disabled=false;btn.textContent="Save Real Order"}
+}
+async function updateStatus(id,status,sel){
+ try{await db.collection("orders").doc(id).update({status,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});showStatus("appStatus","Order status updated to "+status+".","ok")}
+ catch(e){showStatus("appStatus","Status update failed:\n"+friendlyError(e),"err")}
+}
 </script>
-<script>
-let data=[["SX-1001","Sara M.","Parcel","AED 35","COD","Out for delivery"],["SX-1002","Khalid A.","Food","AED 22","Card","Delivered"],["SX-1003","Mariam H.","Shopping","AED 48","COD","Processing"]];
-function render(){let html=data.map((r,i)=>`<tr>${r.slice(0,5).map(x=>`<td>${x}</td>`).join("")}<td>${r[5]}</td><td><select onchange="data[${i}][5]=this.value;render()">${["Processing","Out for delivery","Delivered","Cancelled"].map(s=>`<option ${s===r[5]?"selected":""}>${s}</option>`).join("")}</select></td></tr>`).join("");document.getElementById("allorders").innerHTML=html;document.getElementById("recent").innerHTML=data.slice(0,3).map(r=>`<tr>${[r[0],r[1],r[2],r[3],r[5]].map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")}
-document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));document.getElementById(b.dataset.page).classList.remove("hidden");document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x===b))});
-document.getElementById("lang").onchange=e=>{let ar=e.target.value==="ar";document.documentElement.dir=ar?"rtl":"ltr";document.querySelectorAll("[data-en]").forEach(el=>el.textContent=ar?el.dataset.ar:el.dataset.en)};
-document.getElementById("add").onclick=()=>{data.unshift(["SX-"+(1001+data.length),"New demo customer","Parcel","AED 30","COD","Processing"]);render()};
-document.getElementById("search").oninput=e=>document.querySelectorAll("#allorders tr").forEach(r=>r.style.display=r.textContent.toLowerCase().includes(e.target.value.toLowerCase())?"":"none");
-render();
-</script></body></html>
+</body></html>
