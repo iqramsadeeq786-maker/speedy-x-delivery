@@ -1,0 +1,27 @@
+workflows:
+  rider-android:
+    name: Speedy X Rider Android APK
+    max_build_duration: 60
+    instance_type: linux_x2
+
+    environment:
+      flutter: stable
+
+    scripts:
+      - name: Generate Android project files
+        script: |
+          cd rider-app
+          flutter create --platforms=android --project-name speedy_x_rider .
+
+      - name: Get Flutter packages
+        script: |
+          cd rider-app
+          flutter pub get
+
+      - name: Build Rider APK
+        script: |
+          cd rider-app
+          flutter build apk --debug
+
+    artifacts:
+      - rider-app/build/app/outputs/flutter-apk/*.apk
