@@ -14,8 +14,6 @@ workflows:
           cd rider-app
           flutter create --platforms=android --project-name speedy_x_rider .
 
-            
-      
       - name: Add Firebase configuration
         script: |
           cd rider-app
@@ -33,19 +31,17 @@ workflows:
           if not settings or not app:
               raise SystemExit("Android Gradle files not found")
 
-          is_kts = settings.name.endswith(".kts")
-          settings_plugin = '    id("com.google.gms.google-services") version "4.4.2" apply false' if is_kts else "    id 'com.google.gms.google-services' version '4.4.2' apply false"
-          app_plugin = '    id("com.google.gms.google-services")' if app.name.endswith(".kts") else "    id 'com.google.gms.google-services'"
+          settings_plugin = '    id("com.google.gms.google-services") version "4.4.2" apply false' if settings.suffix == ".kts" else "    id 'com.google.gms.google-services' version '4.4.2' apply false"
+          app_plugin = '    id("com.google.gms.google-services")' if app.suffix == ".kts" else "    id 'com.google.gms.google-services'"
 
           for file, plugin in [(settings, settings_plugin), (app, app_plugin)]:
               content = file.read_text()
               if "com.google.gms.google-services" not in content:
                   content = re.sub(r"plugins\s*\{", lambda m: m.group(0) + "\n" + plugin, content, count=1)
                   file.write_text(content)
+
           print("Firebase Gradle plugin configured")
           PY
-          
-          
 
       - name: Get Flutter packages
         script: |
