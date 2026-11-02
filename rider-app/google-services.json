@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "596204928792",
+    "project_id": "speedy-x-delivery",
+    "storage_bucket": "speedy-x-delivery.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596204928792:android:c78d0a18a1384c9ba9a86d",
+        "android_client_info": {
+          "package_name": "com.example.speedy_x_rider"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6NTz6NzziOSenWqRodw40E7ZnGTJUP90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
