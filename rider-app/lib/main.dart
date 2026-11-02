@@ -111,10 +111,12 @@ class _SpeedyXRiderAppState extends State<SpeedyXRiderApp> {
                         ),
                       ),
                       const SizedBox(height: 18),
-                      const CircleAvatar(
-                        radius: 42,
-                        child: Icon(Icons.delivery_dining, size: 48),
-                      ),
+                      Image.asset(
+  'speedy_x_app_icon.png',
+  width: 120,
+  height: 120,
+  fit: BoxFit.contain,
+),
                       const SizedBox(height: 18),
                       Text(
                         t[0],
