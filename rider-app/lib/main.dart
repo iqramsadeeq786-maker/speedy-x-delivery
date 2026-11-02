@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -256,9 +257,6 @@ class Words {
       'رقم الطلب',
     ],
   };
-
-  static String get(String lang, int index) =>
-      data[lang]![index];
 }
 
 class LoginPage extends StatefulWidget {
@@ -315,13 +313,12 @@ class _LoginPageState extends State<LoginPage> {
         password: password.text,
       );
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
       setState(() {
-        error = e.code == 'network-request-failed'
-            ? t[10]
-            : t[9];
+        error = e.code == 'network-request-failed' ? t[10] : t[9];
       });
     } catch (_) {
-      setState(() => error = t[10]);
+      if (mounted) setState(() => error = t[10]);
     } finally {
       if (mounted) setState(() => loading = false);
     }
@@ -347,28 +344,18 @@ class _LoginPageState extends State<LoginPage> {
                     DropdownButton<String>(
                       value: widget.language,
                       items: const [
-                        DropdownMenuItem(
-                          value: 'en',
-                          child: Text('English'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'ur',
-                          child: Text('اردو'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'ar',
-                          child: Text('العربية'),
-                        ),
+                        DropdownMenuItem(value: 'en', child: Text('English')),
+                        DropdownMenuItem(value: 'ur', child: Text('اردو')),
+                        DropdownMenuItem(value: 'ar', child: Text('العربية')),
                       ],
                       onChanged: (v) {
                         if (v != null) widget.onLanguageChanged(v);
                       },
                     ),
                     const SizedBox(height: 20),
-                    Image.asset(
-                      'speedy_x_app_icon.png',
-                      width: 120,
-                      height: 120,
+                    const CircleAvatar(
+                      radius: 55,
+                      child: Icon(Icons.delivery_dining, size: 65),
                     ),
                     const SizedBox(height: 18),
                     Text(
@@ -404,7 +391,11 @@ class _LoginPageState extends State<LoginPage> {
                     FilledButton(
                       onPressed: loading ? null : login,
                       child: loading
-                          ? const CircularProgressIndicator()
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
                           : Text(t[4]),
                     ),
                     if (error != null) ...[
@@ -460,14 +451,28 @@ class RiderDashboard extends StatefulWidget {
 class _RiderDashboardState extends State<RiderDashboard> {
   int selected = 0;
 
+  final List<String> allowedStatuses = const [
+    'Confirmed',
+    'Packed',
+    'Shipped',
+    'Out for Delivery',
+    'Delivered',
+    'Completed',
+  ];
+
   CollectionReference<Map<String, dynamic>> get ordersRef =>
       FirebaseFirestore.instance.collection('orders');
 
-  Query<Map<String, dynamic>> get myOrdersQuery =>
-      ordersRef.where(
+  Query<Map<String, dynamic>> get myOrdersQuery => ordersRef.where(
         'assignedRiderUid',
         isEqualTo: widget.user.uid,
       );
+
+  String valueOf(Map<String, dynamic> data, String key) {
+    final value = data[key];
+    if (value == null) return '';
+    return value.toString();
+  }
 
   Future<void> updateOrderStatus(
     String orderId,
@@ -523,6 +528,146 @@ class _RiderDashboardState extends State<RiderDashboard> {
       default:
         return status;
     }
+  }
+
+  Widget statCard(IconData icon, String title, String value) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, size: 27, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 10),
+            Text(title, style: const TextStyle(fontSize: 13)),
+            const SizedBox(height: 5),
+            Text(
+              value,
+              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget emptyCard(IconData icon, String title, String subtitle) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            Icon(icon, size: 45, color: Colors.grey),
+            const SizedBox(height: 12),
+            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            Text(subtitle, textAlign: TextAlign.center),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget orderCard(
+    QueryDocumentSnapshot<Map<String, dynamic>> document,
+    List<String> t,
+  ) {
+    final data = document.data();
+    final customer = valueOf(data, 'customerName');
+    final phone = valueOf(data, 'phone').isNotEmpty
+        ? valueOf(data, 'phone')
+        : valueOf(data, 'customerPhone');
+    final address = valueOf(data, 'address').isNotEmpty
+        ? valueOf(data, 'address')
+        : valueOf(data, 'deliveryAddress');
+    final amount = valueOf(data, 'amount').isNotEmpty
+        ? valueOf(data, 'amount')
+        : valueOf(data, 'total');
+    final payment = valueOf(data, 'payment');
+    final status = valueOf(data, 'status');
+    final orderNumber = valueOf(data, 'orderNumber').isNotEmpty
+        ? valueOf(data, 'orderNumber')
+        : document.id;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 14),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${t[62]}: $orderNumber',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const Icon(Icons.receipt_long, color: Colors.blue),
+              ],
+            ),
+            const Divider(height: 22),
+            Text('${t[36]}: ${customer.isEmpty ? '-' : customer}'),
+            const SizedBox(height: 7),
+            Text('${t[37]}: ${phone.isEmpty ? '-' : phone}'),
+            const SizedBox(height: 7),
+            Text('${t[38]}: ${address.isEmpty ? '-' : address}'),
+            const SizedBox(height: 7),
+            Text('${t[39]}: ${amount.isEmpty ? '-' : amount} ${t[21]}'),
+            const SizedBox(height: 7),
+            Text('${t[40]}: ${payment.isEmpty ? '-' : payment}'),
+            const SizedBox(height: 7),
+            Text('${t[42]}: ${statusText(status, t)}'),
+            const SizedBox(height: 14),
+            if (phone.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => openLink('tel:$phone'),
+                  icon: const Icon(Icons.call),
+                  label: Text(t[43]),
+                ),
+              ),
+            if (address.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => openLink(
+                    'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(address)}',
+                  ),
+                  icon: const Icon(Icons.map),
+                  label: Text(t[44]),
+                ),
+              ),
+            const SizedBox(height: 8),
+            Text(
+              t[42],
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: allowedStatuses.contains(status) ? status : null,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: t[52],
+              ),
+              items: allowedStatuses.map((s) {
+                return DropdownMenuItem<String>(
+                  value: s,
+                  child: Text(statusText(s, t)),
+                );
+              }).toList(),
+              onChanged: (newStatus) {
+                if (newStatus != null && newStatus != status) {
+                  updateOrderStatus(document.id, newStatus);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -637,31 +782,52 @@ class _RiderDashboardState extends State<RiderDashboard> {
             ),
             const SizedBox(height: 20),
             if (snapshot.hasError)
-              Text('${t[48]} ${snapshot.error}',
-                  style: const TextStyle(color: Colors.red)),
+              Text(
+                '${t[48]} ${snapshot.error}',
+                style: const TextStyle(color: Colors.red),
+              ),
             Row(
               children: [
-                Expanded(child: statCard(Icons.inventory_2, t[18],
-                    snapshot.hasData ? '${docs.length}' : '...')),
+                Expanded(
+                  child: statCard(
+                    Icons.inventory_2,
+                    t[18],
+                    snapshot.hasData ? '${docs.length}' : '...',
+                  ),
+                ),
                 const SizedBox(width: 12),
-                Expanded(child: statCard(Icons.check_circle, t[19],
-                    snapshot.hasData ? '$completed' : '...')),
+                Expanded(
+                  child: statCard(
+                    Icons.check_circle,
+                    t[19],
+                    snapshot.hasData ? '$completed' : '...',
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: statCard(Icons.pending_actions, t[20],
-                    snapshot.hasData ? '$pending' : '...')),
+                Expanded(
+                  child: statCard(
+                    Icons.pending_actions,
+                    t[20],
+                    snapshot.hasData ? '$pending' : '...',
+                  ),
+                ),
                 const SizedBox(width: 12),
-                Expanded(child: statCard(Icons.wallet, t[15], '${t[21]} 0')),
+                Expanded(
+                  child: statCard(Icons.wallet, t[15], '${t[21]} 0'),
+                ),
               ],
             ),
             const SizedBox(height: 22),
             Text(
               t[14],
               style: const TextStyle(
-                  fontSize: 19, fontWeight: FontWeight.bold),
+                fontSize: 19,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 10),
             if (snapshot.connectionState == ConnectionState.waiting)
@@ -692,4 +858,119 @@ class _RiderDashboardState extends State<RiderDashboard> {
               padding: const EdgeInsets.all(20),
               child: Text(
                 '${t[48]}\n${snapshot.error}',
-                te
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          );
+        }
+
+        final docs = snapshot.data?.docs ?? [];
+
+        if (docs.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: emptyCard(Icons.inbox, t[22], t[49]),
+            ),
+          );
+        }
+
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: docs.map((d) => orderCard(d, t)).toList(),
+        );
+      },
+    );
+  }
+
+  Widget earnings(List<String> t) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: emptyCard(
+          Icons.account_balance_wallet,
+          t[15],
+          t[24],
+        ),
+      ),
+    );
+  }
+
+  Widget location(List<String> t) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: emptyCard(
+          Icons.location_on,
+          t[16],
+          t[25],
+        ),
+      ),
+    );
+  }
+
+  Widget profile(List<String> t) {
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('riders')
+          .doc(widget.user.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        final data = snapshot.data?.data() ?? {};
+        final name = valueOf(data, 'name');
+
+        return ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            const CircleAvatar(
+              radius: 42,
+              child: Icon(Icons.person, size: 48),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              name.isEmpty ? t[17] : name,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 21,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.email),
+                title: Text(t[27]),
+                subtitle: Text(widget.user.email ?? '-'),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.verified_user),
+                title: Text(t[28]),
+                subtitle: Text(
+                  data['active'] == true ? t[31] : t[32],
+                ),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.phone),
+                title: Text(t[37]),
+                subtitle: Text(valueOf(data, 'phone').isEmpty
+                    ? '-'
+                    : valueOf(data, 'phone')),
+              ),
+            ),
+            const SizedBox(height: 18),
+            FilledButton.icon(
+              onPressed: () => FirebaseAuth.instance.signOut(),
+              icon: const Icon(Icons.logout),
+              label: Text(t[11]),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
