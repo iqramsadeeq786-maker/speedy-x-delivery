@@ -1,36 +1,653 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Speedy X Delivery Admin</title><style>
-*{box-sizing:border-box}body{margin:0;background:#f3f6fb;color:#172033;font-family:Arial}header{background:#14213d;color:white;padding:16px;display:flex;justify-content:space-between;align-items:center}main{max-width:1100px;margin:18px auto;padding:0 12px}.card{background:white;border:1px solid #dbe3ef;border-radius:12px;padding:16px;margin-bottom:14px}h2{font-size:19px;margin:0 0 12px}.muted{color:#64748b;font-size:13px}label{display:block;font-size:13px;font-weight:bold;margin:10px 0 5px}input,select,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}button{padding:11px 14px;border:0;border-radius:8px;background:#2563eb;color:white;font-weight:bold;margin:5px 4px 5px 0}button.secondary{background:#475569}.hidden{display:none!important}.grid,.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.stat{background:white;border:1px solid #dbe3ef;border-radius:10px;padding:14px}.stat b{display:block;font-size:24px;margin-top:7px}.nav{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}.nav button{background:#e2e8f0;color:#172033}.nav button.active{background:#2563eb;color:white}.status{padding:10px;border-radius:8px;margin-top:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}.info{background:#eff6ff;color:#1e40af}.err{background:#fef2f2;color:#991b1b}.ok{background:#ecfdf5;color:#065f46}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:9px;border-bottom:1px solid #dbe3ef;text-align:left;vertical-align:top}th{background:#f8fafc}td select{min-width:125px;padding:6px}
-</style></head><body><header><div><b>Speedy X Delivery</b><div class="muted" style="color:#cbd5e1">Admin Management Panel</div></div><button class="secondary" onclick="toggleLang()" id="lang">العربية</button></header><main>
-<section id="login" class="card" style="max-width:430px;margin:35px auto"><h2>Admin Login</h2><label>Email</label><input id="email" type="email"><label>Password</label><input id="password" type="password"><button onclick="signIn()" id="loginBtn">Login</button><div id="loginMsg" class="status info">Ready.</div><p class="muted">Never share your password.</p></section>
-<section id="app" class="hidden"><div class="card"><b>Dashboard</b><div class="muted" id="user"></div><button class="secondary" onclick="logout()">Logout</button><div id="mainMsg" class="status info">Connecting…</div></div>
-<div class="nav"><button class="active" onclick="tab('dashboard',this)">Dashboard</button><button onclick="tab('orders',this)">All Orders</button><button onclick="tab('new',this)">+ New Order</button><button onclick="tab('riders',this)">Riders</button><button onclick="tab('customers',this)">Customers</button><button onclick="tab('reports',this)">Sales & Reports</button><button onclick="tab('gps',this)">Live GPS</button></div>
-<section id="dashboard" class="pane"><div class="stats"><div class="stat">Total Orders<b id="sOrders">0</b></div><div class="stat">Processing<b id="sProcessing">0</b></div><div class="stat">Delivered<b id="sDelivered">0</b></div><div class="stat">Sales AED<b id="sSales">0.00</b></div><div class="stat">Riders<b id="sRiders">0</b></div><div class="stat">Customers<b id="sCustomers">0</b></div></div><div class="card" style="margin-top:12px"><h2>Recent Orders</h2><div class="tablewrap"><table><tbody id="recent"></tbody></table></div></div></section>
-<section id="orders" class="pane hidden card"><h2>All Orders</h2><div class="tablewrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Address</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead><tbody id="ordersBody"></tbody></table></div></section>
-<section id="new" class="pane hidden card"><h2>Create New Order</h2><div class="grid"><div><label>Customer name *</label><input id="oName"></div><div><label>Phone *</label><input id="oPhone"></div><div><label>Address *</label><input id="oAddress"></div><div><label>Type</label><select id="oType"><option>Parcel</option><option>Food</option><option>Shopping</option><option>Documents</option><option>Other</option></select></div><div><label>Amount AED *</label><input id="oAmount" type="number" min="0" step=".01"></div><div><label>Payment</label><select id="oPayment"><option>COD</option><option>Card</option><option>Paid</option></select></div></div><label>Notes</label><textarea id="oNotes"></textarea><button onclick="createOrder()">Save Order</button><div id="orderMsg" class="status info hidden"></div></section>
-<section id="riders" class="pane hidden card"><h2>Riders Management</h2><div class="grid"><div><label>Name</label><input id="rName"></div><div><label>Phone</label><input id="rPhone"></div><div><label>Email</label><input id="rEmail"></div></div><button onclick="addRecord('riders','rName','rPhone','rEmail','riderMsg')">Add Rider</button><div id="riderMsg" class="status info hidden"></div><div class="tablewrap"><table><tbody id="ridersBody"></tbody></table></div></section>
-<section id="customers" class="pane hidden card"><h2>Customers Management</h2><div class="grid"><div><label>Name</label><input id="cName"></div><div><label>Phone</label><input id="cPhone"></div><div><label>Address</label><input id="cAddress"></div></div><button onclick="addRecord('customers','cName','cPhone','cAddress','customerMsg')">Add Customer</button><div id="customerMsg" class="status info hidden"></div><div class="tablewrap"><table><tbody id="customersBody"></tbody></table></div></section>
-<section id="reports" class="pane hidden card"><h2>Sales & Reports</h2><div id="report"></div><button onclick="csv()">Download Orders CSV</button></section>
-<section id="gps" class="pane hidden card"><h2>Live GPS</h2><div class="status info">Live GPS is not connected yet. It requires a Rider App that signs in and sends location updates to Firestore. No locations are fabricated.</div></section>
-</section></main>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script>
-const cfg={apiKey:"AIzaSyD6FoArUPciWXsclfAS6Tc1gDidxLxqN8w",authDomain:"speedy-x-delivery.firebaseapp.com",projectId:"speedy-x-delivery",storageBucket:"speedy-x-delivery.firebasestorage.app",messagingSenderId:"596204928792",appId:"1:596204928792:web:781540d8a4b267b7a9a86d"};
-const UID="dsRl41rCcCZVpOfuxy4z5yJUNKZ2",MAIL="iqramsadeeq786@gmail.com";let auth,db,orders=[],riders=[],customers=[],offs=[];
-const $=x=>document.getElementById(x);function status(id,t,k="info"){$(id).className="status "+k;$(id).textContent=t;$(id).classList.remove("hidden")}function error(e){return (e.code||"unknown")+": "+(e.message||e)}
-try{firebase.initializeApp(cfg);auth=firebase.auth();db=firebase.firestore()}catch(e){status("loginMsg","Firebase initialization error: "+e.message,"err")}
-function signIn(){let b=$("loginBtn");b.disabled=true;b.textContent="Signing in…";let done=false,t=setTimeout(()=>{if(!done){b.disabled=false;b.textContent="Login";status("loginMsg","Firebase did not respond in 15 seconds. Check SDK/network/domain.","err")}},15000);auth.signInWithEmailAndPassword($("email").value.trim(),$("password").value).then(async c=>{done=true;clearTimeout(t);if(c.user.uid!==UID||c.user.email.toLowerCase()!==MAIL){await auth.signOut();throw new Error("This account is not the configured admin.")}open(c.user)}).catch(e=>{done=true;clearTimeout(t);b.disabled=false;b.textContent="Login";status("loginMsg",error(e),"err")})}
-auth.onAuthStateChanged(u=>{if(!u)return;if(u.uid===UID&&u.email?.toLowerCase()===MAIL)open(u);else auth.signOut()});
-function open(u){$("login").classList.add("hidden");$("app").classList.remove("hidden");$("user").textContent=u.email;load()}
-function logout(){offs.forEach(f=>f());auth.signOut().then(()=>location.reload())}
-function tab(id,b){document.querySelectorAll(".pane").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active")}
-function toggleLang(){let ar=document.documentElement.dir!=="rtl";document.documentElement.dir=ar?"rtl":"ltr";$("lang").textContent=ar?"English":"العربية";document.querySelectorAll(".nav button").forEach((b,i)=>b.textContent=ar?["لوحة التحكم","كل الطلبات","+ طلب جديد","السائقون","العملاء","المبيعات والتقارير","الموقع المباشر"][i]:["Dashboard","All Orders","+ New Order","Riders","Customers","Sales & Reports","Live GPS"][i])}
-function load(){offs.push(db.collection("orders").orderBy("createdAt","desc").limit(300).onSnapshot(s=>{orders=s.docs.map(d=>({id:d.id,...d.data()}));render();status("mainMsg","Firestore connected · "+orders.length+" orders loaded","ok")},e=>status("mainMsg",error(e),"err")));
-offs.push(db.collection("riders").orderBy("createdAt","desc").onSnapshot(s=>{riders=s.docs.map(d=>({id:d.id,...d.data()}));list("ridersBody",riders);$("sRiders").textContent=riders.length},e=>status("mainMsg","Riders collection: "+error(e),"err")));
-offs.push(db.collection("customers").orderBy("createdAt","desc").onSnapshot(s=>{customers=s.docs.map(d=>({id:d.id,...d.data()}));list("customersBody",customers);$("sCustomers").textContent=customers.length},e=>status("mainMsg","Customers collection: "+error(e),"err")))}
-function render(){let total=orders.length,proc=orders.filter(o=>!["Delivered","Completed","Cancelled","Returned"].includes(o.status)).length,del=orders.filter(o=>["Delivered","Completed"].includes(o.status)).length,sales=orders.reduce((a,o)=>a+Number(o.amount||0),0);$("sOrders").textContent=total;$("sProcessing").textContent=proc;$("sDelivered").textContent=del;$("sSales").textContent=sales.toFixed(2);$("report").textContent="Orders: "+total+" | Delivered: "+del+" | Total order value: AED "+sales.toFixed(2);
-$("recent").innerHTML="";$("ordersBody").innerHTML="";orders.slice(0,10).forEach(o=>{let tr=document.createElement("tr");[o.orderNumber||o.id,o.customerName||"", "AED "+Number(o.amount||0).toFixed(2),o.status||""].forEach(v=>{let td=document.createElement("td");td.textContent=v;tr.append(td)});$("recent").append(tr)});
-orders.forEach(o=>{let tr=document.createElement("tr");[o.orderNumber||o.id,(o.customerName||"")+" / "+(o.phone||""),o.address||"","AED "+Number(o.amount||0).toFixed(2),o.payment||""].forEach(v=>{let td=document.createElement("td");td.textContent=v;tr.append(td)});let td=document.createElement("td"),sel=document.createElement("select");["Processing","Confirmed","Packed","Shipped","Out for Delivery","Delivered","Completed","Cancelled","Returned"].forEach(x=>{let op=document.createElement("option");op.textContent=x;sel.append(op)});sel.value=o.status||"Processing";sel.onchange=()=>db.collection("orders").doc(o.id).update({status:sel.value,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}).catch(e=>status("mainMsg",error(e),"err"));td.append(sel);tr.append(td);$("ordersBody").append(tr)})}
-async function createOrder(){let n=$("oName").value.trim(),p=$("oPhone").value.trim(),a=$("oAddress").value.trim(),v=Number($("oAmount").value);if(!n||!p||!a||$("oAmount").value===""||v<0){status("orderMsg","Complete customer, phone, address and amount.","err");return}try{let num="SX-"+Date.now().toString().slice(-8);await db.collection("orders").add({orderNumber:num,customerName:n,phone:p,address:a,orderType:$("oType").value,amount:v,payment:$("oPayment").value,notes:$("oNotes").value,status:"Processing",currency:"AED",createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:auth.currentUser.uid});status("orderMsg","Order saved: "+num,"ok");["oName","oPhone","oAddress","oAmount","oNotes"].forEach(x=>$(x).value="")}catch(e){status("orderMsg",error(e),"err")}}
-async function addRecord(col,n,p,third,msgid){let a=$(n).value.trim(),b=$(p).value.trim(),c=$(third).value.trim();if(!a||!b){status(msgid,"Name and phone are required.","err");return}try{let data={name:a,phone:b,createdAt:firebase.firestore.FieldValue.serverTimestamp()};if(col==="riders")data.email=c;else data.address=c;await db.collection(col).add(data);$(n).value=$(p).value=$(third).value="";status(msgid,"Saved to Firestore.","ok")}catch(e){status(msgid,error(e),"err")}}
-function list(id,arr){$(id).innerHTML="";arr.forEach(x=>{let tr=document.createElement("tr");[x.name,x.phone,x.email||x.address||""].forEach(v=>{let td=document.createElement("td");td.textContent=v||"";tr.append(td)});$(id).append(tr)})}
-function csv(){let rows=[["Order","Customer","Phone","Address","Amount AED","Payment","Status"],...orders.map(o=>[o.orderNumber,o.customerName,o.phone,o.address,o.amount,o.payment,o.status])];let data=rows.map(r=>r.map(v=>'"'+String(v??"").replaceAll('"','""')+'"').join(",")).join("\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"text/csv"}));a.download="speedy-x-orders.csv";a.click();URL.revokeObjectURL(a.href)}
-</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Speedy X Delivery Admin</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fb;color:#172033;font-family:Arial}
+header{background:#14213d;color:white;padding:16px;display:flex;justify-content:space-between;align-items:center}
+main{max-width:1200px;margin:18px auto;padding:0 12px}
+.card{background:white;border:1px solid #dbe3ef;border-radius:12px;padding:16px;margin-bottom:14px}
+h2{font-size:19px;margin:0 0 12px}
+.muted{color:#64748b;font-size:13px}
+label{display:block;font-size:13px;font-weight:bold;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}
+button{padding:11px 14px;border:0;border-radius:8px;background:#2563eb;color:white;font-weight:bold;margin:5px 4px 5px 0}
+button.secondary{background:#475569}
+.hidden{display:none!important}
+.grid,.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.stat{background:white;border:1px solid #dbe3ef;border-radius:10px;padding:14px}
+.stat b{display:block;font-size:24px;margin-top:7px}
+.nav{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.nav button{background:#e2e8f0;color:#172033}
+.nav button.active{background:#2563eb;color:white}
+.status{padding:10px;border-radius:8px;margin-top:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
+.info{background:#eff6ff;color:#1e40af}
+.err{background:#fef2f2;color:#991b1b}
+.ok{background:#ecfdf5;color:#065f46}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:9px;border-bottom:1px solid #dbe3ef;text-align:left;vertical-align:top}
+th{background:#f8fafc}
+td select{min-width:145px;padding:6px}
+.small{font-size:11px;color:#64748b;overflow-wrap:anywhere}
+</style>
+</head>
+
+<body>
+<header>
+<div>
+<b>Speedy X Delivery</b>
+<div class="muted" style="color:#cbd5e1">Admin Management Panel</div>
+</div>
+<button class="secondary" onclick="toggleLang()" id="lang">العربية</button>
+</header>
+
+<main>
+
+<section id="login" class="card" style="max-width:430px;margin:35px auto">
+<h2>Admin Login</h2>
+<label>Email</label>
+<input id="email" type="email">
+<label>Password</label>
+<input id="password" type="password">
+<button onclick="signIn()" id="loginBtn">Login</button>
+<div id="loginMsg" class="status info">Ready.</div>
+<p class="muted">Never share your password.</p>
+</section>
+
+<section id="app" class="hidden">
+
+<div class="card">
+<b>Dashboard</b>
+<div class="muted" id="user"></div>
+<button class="secondary" onclick="logout()">Logout</button>
+<div id="mainMsg" class="status info">Connecting…</div>
+</div>
+
+<div class="nav">
+<button class="active" onclick="tab('dashboard',this)">Dashboard</button>
+<button onclick="tab('orders',this)">All Orders</button>
+<button onclick="tab('new',this)">+ New Order</button>
+<button onclick="tab('riders',this)">Riders</button>
+<button onclick="tab('customers',this)">Customers</button>
+<button onclick="tab('reports',this)">Sales & Reports</button>
+<button onclick="tab('gps',this)">Live GPS</button>
+</div>
+
+<section id="dashboard" class="pane">
+<div class="stats">
+<div class="stat">Total Orders<b id="sOrders">0</b></div>
+<div class="stat">Processing<b id="sProcessing">0</b></div>
+<div class="stat">Delivered<b id="sDelivered">0</b></div>
+<div class="stat">Sales AED<b id="sSales">0.00</b></div>
+<div class="stat">Riders<b id="sRiders">0</b></div>
+<div class="stat">Customers<b id="sCustomers">0</b></div>
+</div>
+<div class="card" style="margin-top:12px">
+<h2>Recent Orders</h2>
+<div class="tablewrap">
+<table><tbody id="recent"></tbody></table>
+</div>
+</div>
+</section>
+
+<section id="orders" class="pane hidden card">
+<h2>All Orders</h2>
+<div class="muted">Assign a rider to an order using the dropdown.</div>
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>Order</th>
+<th>Customer</th>
+<th>Address</th>
+<th>Amount</th>
+<th>Payment</th>
+<th>Status</th>
+<th>Assign Rider</th>
+</tr>
+</thead>
+<tbody id="ordersBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="new" class="pane hidden card">
+<h2>Create New Order</h2>
+<div class="grid">
+<div><label>Customer name *</label><input id="oName"></div>
+<div><label>Phone *</label><input id="oPhone"></div>
+<div><label>Address *</label><input id="oAddress"></div>
+<div>
+<label>Type</label>
+<select id="oType">
+<option>Parcel</option><option>Food</option>
+<option>Shopping</option><option>Documents</option><option>Other</option>
+</select>
+</div>
+<div><label>Amount AED *</label><input id="oAmount" type="number" min="0" step=".01"></div>
+<div>
+<label>Payment</label>
+<select id="oPayment"><option>COD</option><option>Card</option><option>Paid</option></select>
+</div>
+</div>
+<label>Notes</label>
+<textarea id="oNotes"></textarea>
+<button onclick="createOrder()">Save Order</button>
+<div id="orderMsg" class="status info hidden"></div>
+</section>
+
+<section id="riders" class="pane hidden card">
+<h2>Riders Management</h2>
+<div class="status info">
+Enter the rider's Firebase Authentication UID. The UID must belong to the rider's actual login account.
+</div>
+<div class="grid">
+<div><label>Rider Name *</label><input id="rName"></div>
+<div><label>Phone *</label><input id="rPhone"></div>
+<div><label>Rider Email *</label><input id="rEmail" type="email"></div>
+<div><label>Firebase Rider UID *</label><input id="rUid"></div>
+</div>
+<button onclick="addRider()">Add / Update Rider</button>
+<div id="riderMsg" class="status info hidden"></div>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>UID</th><th>Account</th></tr></thead>
+<tbody id="ridersBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="customers" class="pane hidden card">
+<h2>Customers Management</h2>
+<div class="grid">
+<div><label>Name</label><input id="cName"></div>
+<div><label>Phone</label><input id="cPhone"></div>
+<div><label>Address</label><input id="cAddress"></div>
+</div>
+<button onclick="addRecord('customers','cName','cPhone','cAddress','customerMsg')">Add Customer</button>
+<div id="customerMsg" class="status info hidden"></div>
+<div class="tablewrap">
+<table><tbody id="customersBody"></tbody></table>
+</div>
+</section>
+
+<section id="reports" class="pane hidden card">
+<h2>Sales & Reports</h2>
+<div id="report"></div>
+<button onclick="csv()">Download Orders CSV</button>
+</section>
+
+<section id="gps" class="pane hidden card">
+<h2>Live GPS</h2>
+<div class="status info">
+Live GPS is not connected yet. It requires a Rider App that signs in and sends location updates to Firestore. No locations are fabricated.
+</div>
+</section>
+
+</section>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+const cfg={
+apiKey:"AIzaSyD6FoArUPciWXsclfAS6Tc1gDidxLxqN8w",
+authDomain:"speedy-x-delivery.firebaseapp.com",
+projectId:"speedy-x-delivery",
+storageBucket:"speedy-x-delivery.firebasestorage.app",
+messagingSenderId:"596204928792",
+appId:"1:596204928792:web:781540d8a4b267b7a9a86d"
+};
+
+const UID="dsRl41rCcCZVpOfuxy4z5yJUNKZ2";
+const MAIL="iqramsadeeq786@gmail.com";
+
+let auth,db,orders=[],riders=[],customers=[],offs=[];
+const $=x=>document.getElementById(x);
+
+function status(id,t,k="info"){
+$(id).className="status "+k;
+$(id).textContent=t;
+$(id).classList.remove("hidden");
+}
+
+function error(e){
+return (e.code||"unknown")+": "+(e.message||e);
+}
+
+try{
+firebase.initializeApp(cfg);
+auth=firebase.auth();
+db=firebase.firestore();
+}catch(e){
+status("loginMsg","Firebase initialization error: "+e.message,"err");
+}
+
+function signIn(){
+let b=$("loginBtn");
+b.disabled=true;
+b.textContent="Signing in…";
+
+let done=false;
+let t=setTimeout(()=>{
+if(!done){
+b.disabled=false;
+b.textContent="Login";
+status("loginMsg","Firebase did not respond. Check internet and domain.","err");
+}
+},15000);
+
+auth.signInWithEmailAndPassword(
+$("email").value.trim(),
+$("password").value
+).then(async c=>{
+done=true;
+clearTimeout(t);
+
+if(c.user.uid!==UID || c.user.email.toLowerCase()!==MAIL){
+await auth.signOut();
+throw new Error("This account is not the configured admin.");
+}
+open(c.user);
+
+}).catch(e=>{
+done=true;
+clearTimeout(t);
+b.disabled=false;
+b.textContent="Login";
+status("loginMsg",error(e),"err");
+});
+}
+
+auth.onAuthStateChanged(u=>{
+if(!u)return;
+if(u.uid===UID && u.email?.toLowerCase()===MAIL){
+open(u);
+}else{
+auth.signOut();
+}
+});
+
+function open(u){
+$("login").classList.add("hidden");
+$("app").classList.remove("hidden");
+$("user").textContent=u.email;
+load();
+}
+
+function logout(){
+offs.forEach(f=>f());
+offs=[];
+auth.signOut().then(()=>location.reload());
+}
+
+function tab(id,b){
+document.querySelectorAll(".pane").forEach(x=>x.classList.add("hidden"));
+$(id).classList.remove("hidden");
+document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
+b.classList.add("active");
+}
+
+function toggleLang(){
+let ar=document.documentElement.dir!=="rtl";
+document.documentElement.dir=ar?"rtl":"ltr";
+$("lang").textContent=ar?"English":"العربية";
+
+document.querySelectorAll(".nav button").forEach((b,i)=>{
+b.textContent=ar?
+["لوحة التحكم","كل الطلبات","+ طلب جديد","السائقون","العملاء","المبيعات والتقارير","الموقع المباشر"][i]:
+["Dashboard","All Orders","+ New Order","Riders","Customers","Sales & Reports","Live GPS"][i];
+});
+}
+
+function load(){
+
+offs.push(
+db.collection("orders").orderBy("createdAt","desc").limit(300)
+.onSnapshot(s=>{
+orders=s.docs.map(d=>({id:d.id,...d.data()}));
+render();
+status("mainMsg","Firestore connected · "+orders.length+" orders loaded","ok");
+},e=>status("mainMsg",error(e),"err"))
+);
+
+offs.push(
+db.collection("riders").onSnapshot(s=>{
+riders=s.docs.map(d=>({id:d.id,...d.data()}));
+listRiders();
+$("sRiders").textContent=riders.length;
+render();
+},e=>status("mainMsg","Riders collection: "+error(e),"err"))
+);
+
+offs.push(
+db.collection("customers").onSnapshot(s=>{
+customers=s.docs.map(d=>({id:d.id,...d.data()}));
+list("customersBody",customers);
+$("sCustomers").textContent=customers.length;
+},e=>status("mainMsg","Customers collection: "+error(e),"err"))
+);
+}
+
+function render(){
+
+let total=orders.length;
+let proc=orders.filter(o=>!["Delivered","Completed","Cancelled","Returned"].includes(o.status)).length;
+let del=orders.filter(o=>["Delivered","Completed"].includes(o.status)).length;
+let sales=orders.reduce((a,o)=>a+Number(o.amount||0),0);
+
+$("sOrders").textContent=total;
+$("sProcessing").textContent=proc;
+$("sDelivered").textContent=del;
+$("sSales").textContent=sales.toFixed(2);
+
+$("report").textContent=
+"Orders: "+total+
+" | Delivered: "+del+
+" | Total order value: AED "+sales.toFixed(2);
+
+$("recent").innerHTML="";
+$("ordersBody").innerHTML="";
+
+orders.slice(0,10).forEach(o=>{
+let tr=document.createElement("tr");
+[
+o.orderNumber||o.id,
+o.customerName||"",
+"AED "+Number(o.amount||0).toFixed(2),
+o.status||""
+].forEach(v=>{
+let td=document.createElement("td");
+td.textContent=v;
+tr.append(td);
+});
+$("recent").append(tr);
+});
+
+orders.forEach(o=>{
+
+let tr=document.createElement("tr");
+
+[
+o.orderNumber||o.id,
+(o.customerName||"")+" / "+(o.phone||""),
+o.address||"",
+"AED "+Number(o.amount||0).toFixed(2),
+o.payment||""
+].forEach(v=>{
+let td=document.createElement("td");
+td.textContent=v;
+tr.append(td);
+});
+
+// Status dropdown
+let td=document.createElement("td");
+let sel=document.createElement("select");
+
+[
+"Processing","Confirmed","Packed","Shipped",
+"Out for Delivery","Delivered","Completed",
+"Cancelled","Returned"
+].forEach(x=>{
+let op=document.createElement("option");
+op.textContent=x;
+sel.append(op);
+});
+
+sel.value=o.status||"Processing";
+
+sel.onchange=()=>{
+db.collection("orders").doc(o.id).update({
+status:sel.value,
+updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+}).catch(e=>status("mainMsg",error(e),"err"));
+};
+
+td.append(sel);
+tr.append(td);
+
+// Assign rider dropdown
+let riderTd=document.createElement("td");
+let riderSelect=document.createElement("select");
+
+let empty=document.createElement("option");
+empty.value="";
+empty.textContent="Select Rider";
+riderSelect.append(empty);
+
+let usableRiders=riders.filter(r=>r.uid && r.active!==false);
+
+usableRiders.forEach(r=>{
+let op=document.createElement("option");
+op.value=r.uid;
+op.textContent=(r.name||"Rider")+" - "+(r.phone||"");
+riderSelect.append(op);
+});
+
+riderSelect.value=o.assignedRiderUid||"";
+
+riderSelect.onchange=async()=>{
+let selected=riders.find(r=>r.uid===riderSelect.value);
+
+try{
+if(!selected){
+await db.collection("orders").doc(o.id).update({
+assignedRiderUid:"",
+assignedRiderEmail:"",
+assignedRiderName:"",
+assignedAt:null,
+updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+});
+}else{
+await db.collection("orders").doc(o.id).update({
+assignedRiderUid:selected.uid,
+assignedRiderEmail:selected.email||"",
+assignedRiderName:selected.name||"",
+assignedAt:firebase.firestore.FieldValue.serverTimestamp(),
+updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+});
+}
+status("mainMsg",selected?
+"Rider assigned: "+selected.name:
+"Rider assignment removed","ok");
+}catch(e){
+status("mainMsg",error(e),"err");
+}
+};
+
+riderTd.append(riderSelect);
+
+if(o.assignedRiderName){
+let small=document.createElement("div");
+small.className="small";
+small.textContent=o.assignedRiderName;
+riderTd.append(small);
+}
+
+tr.append(riderTd);
+$("ordersBody").append(tr);
+});
+}
+
+async function createOrder(){
+
+let n=$("oName").value.trim();
+let p=$("oPhone").value.trim();
+let a=$("oAddress").value.trim();
+let v=Number($("oAmount").value);
+
+if(!n||!p||!a||$("oAmount").value===""||v<0){
+status("orderMsg","Complete customer, phone, address and amount.","err");
+return;
+}
+
+try{
+let num="SX-"+Date.now().toString().slice(-8);
+
+await db.collection("orders").add({
+orderNumber:num,
+customerName:n,
+phone:p,
+address:a,
+orderType:$("oType").value,
+amount:v,
+payment:$("oPayment").value,
+notes:$("oNotes").value,
+status:"Processing",
+currency:"AED",
+assignedRiderUid:"",
+assignedRiderEmail:"",
+assignedRiderName:"",
+createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+createdBy:auth.currentUser.uid
+});
+
+status("orderMsg","Order saved: "+num,"ok");
+
+["oName","oPhone","oAddress","oAmount","oNotes"].forEach(x=>$(x).value="");
+
+}catch(e){
+status("orderMsg",error(e),"err");
+}
+}
+
+// Save rider at riders/{Firebase UID}
+async function addRider(){
+
+let name=$("rName").value.trim();
+let phone=$("rPhone").value.trim();
+let email=$("rEmail").value.trim().toLowerCase();
+let uid=$("rUid").value.trim();
+
+if(!name||!phone||!email||!uid){
+status("riderMsg","Enter rider name, phone, email and Firebase UID.","err");
+return;
+}
+
+try{
+
+await db.collection("riders").doc(uid).set({
+uid:uid,
+name:name,
+phone:phone,
+email:email,
+active:true,
+updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+createdAt:firebase.firestore.FieldValue.serverTimestamp()
+},{merge:true});
+
+["rName","rPhone","rEmail","rUid"].forEach(x=>$(x).value="");
+
+status("riderMsg","Rider saved successfully. UID: "+uid,"ok");
+
+}catch(e){
+status("riderMsg",error(e),"err");
+}
+}
+
+async function addRecord(col,n,p,third,msgid){
+
+let a=$(n).value.trim();
+let b=$(p).value.trim();
+let c=$(third).value.trim();
+
+if(!a||!b){
+status(msgid,"Name and phone are required.","err");
+return;
+}
+
+try{
+
+let data={
+name:a,
+phone:b,
+createdAt:firebase.firestore.FieldValue.serverTimestamp()
+};
+
+if(col==="riders")data.email=c;
+else data.address=c;
+
+await db.collection(col).add(data);
+
+$(n).value=$(p).value=$(third).value="";
+status(msgid,"Saved to Firestore.","ok");
+
+}catch(e){
+status(msgid,error(e),"err");
+}
+}
+
+function listRiders(){
+
+$("ridersBody").innerHTML="";
+
+riders.forEach(x=>{
+
+let tr=document.createElement("tr");
+
+[
+x.name||"",
+x.phone||"",
+x.email||"",
+x.uid||x.id
+].forEach(v=>{
+let td=document.createElement("td");
+td.textContent=v;
+tr.append(td);
+});
+
+let td=document.createElement("td");
+td.textContent=x.active===false?"Inactive":"Active";
+tr.append(td);
+
+$("ridersBody").append(tr);
+});
+}
+
+function list(id,arr){
+
+$(id).innerHTML="";
+
+arr.forEach(x=>{
+
+let tr=document.createElement("tr");
+
+[x.name,x.phone,x.email||x.address||""].forEach(v=>{
+let td=document.createElement("td");
+td.textContent=v||"";
+tr.append(td);
+});
+
+$(id).append(tr);
+});
+}
+
+function csv(){
+
+let rows=[
+["Order","Customer","Phone","Address","Amount AED","Payment","Status","Rider"],
+...orders.map(o=>[
+o.orderNumber,o.customerName,o.phone,o.address,
+o.amount,o.payment,o.status,o.assignedRiderName
+])
+];
+
+let data=rows.map(r=>
+r.map(v=>'"'+String(v??"").replaceAll('"','""')+'"').join(",")
+).join("\n");
+
+let a=document.createElement("a");
+a.href=URL.createObjectURL(new Blob([data],{type:"text/csv"}));
+a.download="speedy-x-orders.csv";
+a.click();
+URL.revokeObjectURL(a.href);
+}
+</script>
+</body>
+</html>
