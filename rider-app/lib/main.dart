@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> main() async {
@@ -64,60 +64,196 @@ class _SpeedyXRiderAppState extends State<SpeedyXRiderApp> {
 class Words {
   static const Map<String, List<String>> data = {
     'en': [
-      'Speedy X Delivery', 'Rider Login', 'Rider Email',
-      'Password', 'LOGIN', 'New Rider?',
+      'Speedy X Delivery',
+      'Rider Login',
+      'Rider Email',
+      'Password',
+      'LOGIN',
+      'New Rider?',
       'Contact Admin to Join',
       'Admin creates and activates all rider accounts.',
       'Please enter email and password.',
       'Invalid email or password.',
       'Network error. Please try again.',
-      'Logout', 'Welcome Rider', 'Dashboard', 'My Orders',
-      'My Earnings', 'Live Location', 'My Profile',
-      'Total Orders', 'Completed', 'Pending', 'AED',
-      'No orders assigned yet', 'Your assigned orders will appear here.',
+      'Logout',
+      'Welcome Rider',
+      'Dashboard',
+      'My Orders',
+      'My Earnings',
+      'Live Location',
+      'My Profile',
+      'Total Orders',
+      'Completed',
+      'Pending',
+      'AED',
+      'No orders assigned yet',
+      'Your assigned orders will appear here.',
       'Your earnings will appear here.',
       'Location tracking will be available soon.',
-      'Account Information', 'Email', 'Status',
-      'Logged In', 'Demo data only', 'Online',
-      'Offline', 'English', 'Urdu', 'Arabic'
+      'Account Information',
+      'Email',
+      'Status',
+      'Logged In',
+      'Demo data only',
+      'Online',
+      'Offline',
+      'English',
+      'Urdu',
+      'Arabic',
+      'Customer',
+      'Phone',
+      'Delivery Address',
+      'Amount',
+      'Payment',
+      'Order Status',
+      'Update Status',
+      'Call Customer',
+      'Open Map',
+      'Order Details',
+      'Loading orders...',
+      'Could not load orders.',
+      'No orders assigned to your account.',
+      'Status updated successfully.',
+      'Update failed. Please try again.',
+      'Select Status',
+      'Processing',
+      'Confirmed',
+      'Packed',
+      'Shipped',
+      'Out for Delivery',
+      'Delivered',
+      'Completed',
+      'Cancelled',
+      'Returned',
+      'Order Number',
     ],
     'ur': [
-      'اسپیڈی ایکس ڈیلیوری', 'رائڈر لاگ اِن', 'رائڈر ای میل',
-      'پاس ورڈ', 'لاگ اِن', 'نئے رائڈر ہیں؟',
+      'اسپیڈی ایکس ڈیلیوری',
+      'رائڈر لاگ اِن',
+      'رائڈر ای میل',
+      'پاس ورڈ',
+      'لاگ اِن',
+      'نئے رائڈر ہیں؟',
       'شامل ہونے کے لیے ایڈمن سے رابطہ کریں',
       'رائڈر اکاؤنٹ ایڈمن بنائے گا اور فعال کرے گا۔',
       'ای میل اور پاس ورڈ درج کریں۔',
       'ای میل یا پاس ورڈ غلط ہے۔',
       'انٹرنیٹ کا مسئلہ ہے، دوبارہ کوشش کریں۔',
-      'لاگ آؤٹ', 'خوش آمدید رائڈر', 'ڈیش بورڈ',
-      'میرے آرڈرز', 'میری کمائی', 'لائیو لوکیشن',
-      'میری پروفائل', 'کل آرڈرز', 'مکمل', 'زیرِ التوا',
-      'درہم', 'ابھی کوئی آرڈر نہیں دیا گیا',
+      'لاگ آؤٹ',
+      'خوش آمدید رائڈر',
+      'ڈیش بورڈ',
+      'میرے آرڈرز',
+      'میری کمائی',
+      'لائیو لوکیشن',
+      'میری پروفائل',
+      'کل آرڈرز',
+      'مکمل',
+      'زیرِ التوا',
+      'درہم',
+      'ابھی کوئی آرڈر نہیں دیا گیا',
       'ایڈمن کے دیے گئے آرڈرز یہاں نظر آئیں گے۔',
       'آپ کی کمائی یہاں نظر آئے گی۔',
       'لوکیشن ٹریکنگ جلد دستیاب ہوگی۔',
-      'اکاؤنٹ کی معلومات', 'ای میل', 'اسٹیٹس',
-      'لاگ اِن ہے', 'صرف ڈیمو ڈیٹا', 'آن لائن',
-      'آف لائن', 'English', 'اردو', 'العربية'
+      'اکاؤنٹ کی معلومات',
+      'ای میل',
+      'اسٹیٹس',
+      'لاگ اِن ہے',
+      'صرف ڈیمو ڈیٹا',
+      'آن لائن',
+      'آف لائن',
+      'English',
+      'اردو',
+      'العربية',
+      'کسٹمر',
+      'فون',
+      'ڈیلیوری ایڈریس',
+      'رقم',
+      'ادائیگی',
+      'آرڈر کا اسٹیٹس',
+      'اسٹیٹس تبدیل کریں',
+      'کسٹمر کو کال کریں',
+      'نقشے پر دیکھیں',
+      'آرڈر کی تفصیلات',
+      'آرڈرز لوڈ ہو رہے ہیں...',
+      'آرڈرز لوڈ نہیں ہو سکے۔',
+      'آپ کے اکاؤنٹ پر کوئی آرڈر نہیں ہے۔',
+      'اسٹیٹس کامیابی سے تبدیل ہوگیا۔',
+      'تبدیلی ناکام ہوگئی، دوبارہ کوشش کریں۔',
+      'اسٹیٹس منتخب کریں',
+      'پروسیسنگ',
+      'کنفرم',
+      'پیک ہو گیا',
+      'شپ ہو گیا',
+      'ڈیلیوری کے لیے روانہ',
+      'ڈیلیور ہو گیا',
+      'مکمل',
+      'منسوخ',
+      'واپس',
+      'آرڈر نمبر',
     ],
     'ar': [
-      'سبيدي إكس للتوصيل', 'تسجيل دخول السائق',
-      'البريد الإلكتروني', 'كلمة المرور', 'تسجيل الدخول',
-      'سائق جديد؟', 'تواصل مع الإدارة للانضمام',
+      'سبيدي إكس للتوصيل',
+      'تسجيل دخول السائق',
+      'البريد الإلكتروني',
+      'كلمة المرور',
+      'تسجيل الدخول',
+      'سائق جديد؟',
+      'تواصل مع الإدارة للانضمام',
       'تقوم الإدارة بإنشاء حساب السائق وتفعيله.',
       'يرجى إدخال البريد الإلكتروني وكلمة المرور.',
       'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
       'خطأ في الاتصال. حاول مرة أخرى.',
-      'تسجيل الخروج', 'مرحباً أيها السائق', 'لوحة التحكم',
-      'طلباتي', 'أرباحي', 'الموقع المباشر', 'ملفي الشخصي',
-      'إجمالي الطلبات', 'مكتمل', 'قيد الانتظار',
-      'درهم', 'لا توجد طلبات معينة حتى الآن',
+      'تسجيل الخروج',
+      'مرحباً أيها السائق',
+      'لوحة التحكم',
+      'طلباتي',
+      'أرباحي',
+      'الموقع المباشر',
+      'ملفي الشخصي',
+      'إجمالي الطلبات',
+      'مكتمل',
+      'قيد الانتظار',
+      'درهم',
+      'لا توجد طلبات معينة حتى الآن',
       'ستظهر الطلبات المعينة لك هنا.',
       'ستظهر أرباحك هنا.',
       'سيكون تتبع الموقع متاحاً قريباً.',
-      'معلومات الحساب', 'البريد الإلكتروني', 'الحالة',
-      'تم تسجيل الدخول', 'بيانات تجريبية فقط', 'متصل',
-      'غير متصل', 'English', 'اردو', 'العربية'
+      'معلومات الحساب',
+      'البريد الإلكتروني',
+      'الحالة',
+      'تم تسجيل الدخول',
+      'بيانات تجريبية فقط',
+      'متصل',
+      'غير متصل',
+      'English',
+      'اردو',
+      'العربية',
+      'العميل',
+      'الهاتف',
+      'عنوان التوصيل',
+      'المبلغ',
+      'الدفع',
+      'حالة الطلب',
+      'تحديث الحالة',
+      'اتصل بالعميل',
+      'افتح الخريطة',
+      'تفاصيل الطلب',
+      'جار تحميل الطلبات...',
+      'تعذر تحميل الطلبات.',
+      'لا توجد طلبات معينة لحسابك.',
+      'تم تحديث الحالة بنجاح.',
+      'فشل التحديث. حاول مرة أخرى.',
+      'اختر الحالة',
+      'قيد المعالجة',
+      'تم التأكيد',
+      'تم التغليف',
+      'تم الشحن',
+      'خرج للتوصيل',
+      'تم التوصيل',
+      'مكتمل',
+      'ملغى',
+      'مرتجع',
+      'رقم الطلب',
     ],
   };
 
@@ -142,6 +278,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final email = TextEditingController();
   final password = TextEditingController();
+
   bool loading = false;
   String? error;
 
@@ -211,11 +348,17 @@ class _LoginPageState extends State<LoginPage> {
                       value: widget.language,
                       items: const [
                         DropdownMenuItem(
-                          value: 'en', child: Text('English')),
+                          value: 'en',
+                          child: Text('English'),
+                        ),
                         DropdownMenuItem(
-                          value: 'ur', child: Text('اردو')),
+                          value: 'ur',
+                          child: Text('اردو'),
+                        ),
                         DropdownMenuItem(
-                          value: 'ar', child: Text('العربية')),
+                          value: 'ar',
+                          child: Text('العربية'),
+                        ),
                       ],
                       onChanged: (v) {
                         if (v != null) widget.onLanguageChanged(v);
@@ -317,6 +460,71 @@ class RiderDashboard extends StatefulWidget {
 class _RiderDashboardState extends State<RiderDashboard> {
   int selected = 0;
 
+  CollectionReference<Map<String, dynamic>> get ordersRef =>
+      FirebaseFirestore.instance.collection('orders');
+
+  Query<Map<String, dynamic>> get myOrdersQuery =>
+      ordersRef.where(
+        'assignedRiderUid',
+        isEqualTo: widget.user.uid,
+      );
+
+  Future<void> updateOrderStatus(
+    String orderId,
+    String newStatus,
+  ) async {
+    final t = Words.data[widget.language]!;
+
+    try {
+      await ordersRef.doc(orderId).update({
+        'status': newStatus,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(t[50])),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${t[51]} $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> openLink(String url) async {
+    final uri = Uri.parse(url);
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  String statusText(String status, List<String> t) {
+    switch (status) {
+      case 'Processing':
+        return t[53];
+      case 'Confirmed':
+        return t[54];
+      case 'Packed':
+        return t[55];
+      case 'Shipped':
+        return t[56];
+      case 'Out for Delivery':
+        return t[57];
+      case 'Delivered':
+        return t[58];
+      case 'Completed':
+        return t[59];
+      case 'Cancelled':
+        return t[60];
+      case 'Returned':
+        return t[61];
+      default:
+        return status;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = Words.data[widget.language]!;
@@ -324,7 +532,7 @@ class _RiderDashboardState extends State<RiderDashboard> {
 
     final pages = [
       dashboard(t),
-      orders(t),
+      ordersPage(t),
       earnings(t),
       location(t),
       profile(t),
@@ -352,9 +560,7 @@ class _RiderDashboardState extends State<RiderDashboard> {
             ),
           ],
         ),
-        body: SafeArea(
-          child: pages[selected],
-        ),
+        body: SafeArea(child: pages[selected]),
         bottomNavigationBar: NavigationBar(
           selectedIndex: selected,
           onDestinationSelected: (value) {
@@ -389,238 +595,101 @@ class _RiderDashboardState extends State<RiderDashboard> {
   }
 
   Widget dashboard(List<String> t) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                t[12],
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 23,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                widget.user.email ?? '',
-                style: const TextStyle(color: Colors.white),
-              ),
-              const SizedBox(height: 12),
-              const Chip(
-                label: Text('Demo Dashboard'),
-                avatar: Icon(Icons.info_outline),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 20),
-        Row(
-          children: [
-            Expanded(
-              child: statCard(
-                Icons.inventory_2,
-                t[18],
-                '0',
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: statCard(
-                Icons.check_circle,
-                t[19],
-                '0',
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: statCard(
-                Icons.pending_actions,
-                t[20],
-                '0',
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: statCard(
-                Icons.wallet,
-                t[15],
-                '${t[21]} 0',
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 22),
-        Text(
-          t[14],
-          style: const TextStyle(
-            fontSize: 19,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 10),
-        emptyCard(Icons.inbox, t[22], t[23]),
-        const SizedBox(height: 18),
-        Text(
-          t[16],
-          style: const TextStyle(
-            fontSize: 19,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 10),
-        emptyCard(Icons.location_on, t[25], t[25]),
-      ],
-    );
-  }
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: myOrdersQuery.snapshots(),
+      builder: (context, snapshot) {
+        final docs = snapshot.data?.docs ?? [];
 
-  Widget statCard(IconData icon, String title, String value) {
-    return Card(
-      elevation: 1,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        final completed = docs.where((d) {
+          final s = d.data()['status'];
+          return s == 'Delivered' || s == 'Completed';
+        }).length;
+
+        final pending = docs.length - completed;
+
+        return ListView(
+          padding: const EdgeInsets.all(16),
           children: [
-            Icon(icon, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 10),
-            Text(title, style: const TextStyle(fontSize: 13)),
-            const SizedBox(height: 6),
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    t[12],
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 23,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.user.email ?? '',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            if (snapshot.hasError)
+              Text('${t[48]} ${snapshot.error}',
+                  style: const TextStyle(color: Colors.red)),
+            Row(
+              children: [
+                Expanded(child: statCard(Icons.inventory_2, t[18],
+                    snapshot.hasData ? '${docs.length}' : '...')),
+                const SizedBox(width: 12),
+                Expanded(child: statCard(Icons.check_circle, t[19],
+                    snapshot.hasData ? '$completed' : '...')),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(child: statCard(Icons.pending_actions, t[20],
+                    snapshot.hasData ? '$pending' : '...')),
+                const SizedBox(width: 12),
+                Expanded(child: statCard(Icons.wallet, t[15], '${t[21]} 0')),
+              ],
+            ),
+            const SizedBox(height: 22),
             Text(
-              value,
+              t[14],
               style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+                  fontSize: 19, fontWeight: FontWeight.bold),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget emptyCard(IconData icon, String title, String subtitle) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(22),
-        child: Column(
-          children: [
-            Icon(icon, size: 38, color: Colors.grey),
             const SizedBox(height: 10),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
-            ),
+            if (snapshot.connectionState == ConnectionState.waiting)
+              Center(child: Text(t[47]))
+            else if (snapshot.hasError)
+              Text(t[48], style: const TextStyle(color: Colors.red))
+            else if (docs.isEmpty)
+              emptyCard(Icons.inbox, t[22], t[23])
+            else
+              ...docs.take(3).map((d) => orderCard(d, t)),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget orders(List<String> t) {
-    return ListView(
-      padding: const EdgeInsets.all(18),
-      children: [
-        Text(
-          t[14],
-          style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        emptyCard(Icons.inbox, t[22], t[23]),
-      ],
-    );
-  }
+  Widget ordersPage(List<String> t) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: myOrdersQuery.snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: Text(t[47]));
+        }
 
-  Widget earnings(List<String> t) {
-    return ListView(
-      padding: const EdgeInsets.all(18),
-      children: [
-        Text(
-          t[15],
-          style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        statCard(Icons.account_balance_wallet, t[15], '${t[21]} 0'),
-        const SizedBox(height: 12),
-        emptyCard(Icons.bar_chart, t[30], t[24]),
-      ],
-    );
-  }
-
-  Widget location(List<String> t) {
-    return ListView(
-      padding: const EdgeInsets.all(18),
-      children: [
-        Text(
-          t[16],
-          style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        emptyCard(Icons.location_on, t[16], t[26]),
-        const SizedBox(height: 12),
-        Text(
-          'GPS is not connected yet.',
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.grey),
-        ),
-      ],
-    );
-  }
-
-  Widget profile(List<String> t) {
-    return ListView(
-      padding: const EdgeInsets.all(18),
-      children: [
-        Text(
-          t[17],
-          style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 20),
-        const CircleAvatar(
-          radius: 42,
-          child: Icon(Icons.person, size: 45),
-        ),
-        const SizedBox(height: 20),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.email),
-            title: Text(t[27]),
-            subtitle: Text(widget.user.email ?? ''),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.verified_user),
-            title: Text(t[28]),
-            subtitle: Text(t[29]),
-          ),
-        ),
-        const SizedBox(height: 20),
-        OutlinedButton.icon(
-          onPressed: () => FirebaseAuth.instance.signOut(),
-          icon: const Icon(Icons.logout),
-          label: Text(t[11]),
-        ),
-      ],
-    );
-  }
-}
+        if (snapshot.hasError) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text(
+                '${t[48]}\n${snapshot.error}',
+                te
