@@ -65,196 +65,91 @@ class _SpeedyXRiderAppState extends State<SpeedyXRiderApp> {
 class Words {
   static const Map<String, List<String>> data = {
     'en': [
-      'Speedy X Delivery',
-      'Rider Login',
-      'Rider Email',
-      'Password',
-      'LOGIN',
-      'New Rider?',
-      'Contact Admin to Join',
+      'Speedy X Delivery', 'Rider Login', 'Rider Email', 'Password',
+      'LOGIN', 'New Rider?', 'Contact Admin to Join',
       'Admin creates and activates all rider accounts.',
       'Please enter email and password.',
       'Invalid email or password.',
-      'Network error. Please try again.',
-      'Logout',
-      'Welcome Rider',
-      'Dashboard',
-      'My Orders',
-      'My Earnings',
-      'Live Location',
-      'My Profile',
-      'Total Orders',
-      'Completed',
-      'Pending',
-      'AED',
+      'Network error. Please try again.', 'Logout', 'Welcome Rider',
+      'Dashboard', 'My Orders', 'My Earnings', 'Live Location',
+      'My Profile', 'Total Orders', 'Completed', 'Pending', 'AED',
       'No orders assigned yet',
       'Your assigned orders will appear here.',
       'Your earnings will appear here.',
       'Location tracking will be available soon.',
-      'Account Information',
-      'Email',
-      'Status',
-      'Logged In',
-      'Demo data only',
-      'Online',
-      'Offline',
-      'English',
-      'Urdu',
-      'Arabic',
-      'Customer',
-      'Phone',
-      'Delivery Address',
-      'Amount',
-      'Payment',
-      'Order Status',
-      'Update Status',
-      'Call Customer',
-      'Open Map',
-      'Order Details',
-      'Loading orders...',
+      'Account Information', 'Email', 'Status', 'Logged In',
+      'Demo data only', 'Online', 'Offline', 'English', 'Urdu',
+      'Arabic', 'Customer', 'Phone', 'Delivery Address', 'Amount',
+      'Payment', 'Order Status', 'Update Status', 'Call Customer',
+      'Open Map', 'Order Details', 'Loading orders...',
       'Could not load orders.',
       'No orders assigned to your account.',
       'Status updated successfully.',
       'Update failed. Please try again.',
-      'Select Status',
-      'Processing',
-      'Confirmed',
-      'Packed',
-      'Shipped',
-      'Out for Delivery',
-      'Delivered',
-      'Completed',
-      'Cancelled',
-      'Returned',
-      'Order Number',
+      'Select Status', 'Processing', 'Confirmed', 'Packed',
+      'Shipped', 'Out for Delivery', 'Delivered', 'Completed',
+      'Cancelled', 'Returned', 'Order Number'
     ],
     'ur': [
-      'اسپیڈی ایکس ڈیلیوری',
-      'رائڈر لاگ اِن',
-      'رائڈر ای میل',
-      'پاس ورڈ',
-      'لاگ اِن',
-      'نئے رائڈر ہیں؟',
+      'اسپیڈی ایکس ڈیلیوری', 'رائڈر لاگ اِن', 'رائڈر ای میل',
+      'پاس ورڈ', 'لاگ اِن', 'نئے رائڈر ہیں؟',
       'شامل ہونے کے لیے ایڈمن سے رابطہ کریں',
       'رائڈر اکاؤنٹ ایڈمن بنائے گا اور فعال کرے گا۔',
       'ای میل اور پاس ورڈ درج کریں۔',
       'ای میل یا پاس ورڈ غلط ہے۔',
       'انٹرنیٹ کا مسئلہ ہے، دوبارہ کوشش کریں۔',
-      'لاگ آؤٹ',
-      'خوش آمدید رائڈر',
-      'ڈیش بورڈ',
-      'میرے آرڈرز',
-      'میری کمائی',
-      'لائیو لوکیشن',
-      'میری پروفائل',
-      'کل آرڈرز',
-      'مکمل',
-      'زیرِ التوا',
-      'درہم',
-      'ابھی کوئی آرڈر نہیں دیا گیا',
+      'لاگ آؤٹ', 'خوش آمدید رائڈر', 'ڈیش بورڈ',
+      'میرے آرڈرز', 'میری کمائی', 'لائیو لوکیشن',
+      'میری پروفائل', 'کل آرڈرز', 'مکمل', 'زیرِ التوا',
+      'درہم', 'ابھی کوئی آرڈر نہیں دیا گیا',
       'ایڈمن کے دیے گئے آرڈرز یہاں نظر آئیں گے۔',
       'آپ کی کمائی یہاں نظر آئے گی۔',
       'لوکیشن ٹریکنگ جلد دستیاب ہوگی۔',
-      'اکاؤنٹ کی معلومات',
-      'ای میل',
-      'اسٹیٹس',
-      'لاگ اِن ہے',
-      'صرف ڈیمو ڈیٹا',
-      'آن لائن',
-      'آف لائن',
-      'English',
-      'اردو',
-      'العربية',
-      'کسٹمر',
-      'فون',
-      'ڈیلیوری ایڈریس',
-      'رقم',
-      'ادائیگی',
-      'آرڈر کا اسٹیٹس',
-      'اسٹیٹس تبدیل کریں',
-      'کسٹمر کو کال کریں',
-      'نقشے پر دیکھیں',
-      'آرڈر کی تفصیلات',
-      'آرڈرز لوڈ ہو رہے ہیں...',
+      'اکاؤنٹ کی معلومات', 'ای میل', 'اسٹیٹس',
+      'لاگ اِن ہے', 'صرف ڈیمو ڈیٹا', 'آن لائن',
+      'آف لائن', 'English', 'اردو', 'العربية',
+      'کسٹمر', 'فون', 'ڈیلیوری ایڈریس', 'رقم',
+      'ادائیگی', 'آرڈر کا اسٹیٹس', 'اسٹیٹس تبدیل کریں',
+      'کسٹمر کو کال کریں', 'نقشے پر دیکھیں',
+      'آرڈر کی تفصیلات', 'آرڈرز لوڈ ہو رہے ہیں...',
       'آرڈرز لوڈ نہیں ہو سکے۔',
       'آپ کے اکاؤنٹ پر کوئی آرڈر نہیں ہے۔',
       'اسٹیٹس کامیابی سے تبدیل ہوگیا۔',
       'تبدیلی ناکام ہوگئی، دوبارہ کوشش کریں۔',
-      'اسٹیٹس منتخب کریں',
-      'پروسیسنگ',
-      'کنفرم',
-      'پیک ہو گیا',
-      'شپ ہو گیا',
-      'ڈیلیوری کے لیے روانہ',
-      'ڈیلیور ہو گیا',
-      'مکمل',
-      'منسوخ',
-      'واپس',
-      'آرڈر نمبر',
+      'اسٹیٹس منتخب کریں', 'پروسیسنگ', 'کنفرم',
+      'پیک ہو گیا', 'شپ ہو گیا', 'ڈیلیوری کے لیے روانہ',
+      'ڈیلیور ہو گیا', 'مکمل', 'منسوخ', 'واپس',
+      'آرڈر نمبر'
     ],
     'ar': [
-      'سبيدي إكس للتوصيل',
-      'تسجيل دخول السائق',
-      'البريد الإلكتروني',
-      'كلمة المرور',
-      'تسجيل الدخول',
-      'سائق جديد؟',
-      'تواصل مع الإدارة للانضمام',
+      'سبيدي إكس للتوصيل', 'تسجيل دخول السائق',
+      'البريد الإلكتروني', 'كلمة المرور', 'تسجيل الدخول',
+      'سائق جديد؟', 'تواصل مع الإدارة للانضمام',
       'تقوم الإدارة بإنشاء حساب السائق وتفعيله.',
       'يرجى إدخال البريد الإلكتروني وكلمة المرور.',
       'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
       'خطأ في الاتصال. حاول مرة أخرى.',
-      'تسجيل الخروج',
-      'مرحباً أيها السائق',
-      'لوحة التحكم',
-      'طلباتي',
-      'أرباحي',
-      'الموقع المباشر',
-      'ملفي الشخصي',
-      'إجمالي الطلبات',
-      'مكتمل',
-      'قيد الانتظار',
-      'درهم',
+      'تسجيل الخروج', 'مرحباً أيها السائق', 'لوحة التحكم',
+      'طلباتي', 'أرباحي', 'الموقع المباشر', 'ملفي الشخصي',
+      'إجمالي الطلبات', 'مكتمل', 'قيد الانتظار', 'درهم',
       'لا توجد طلبات معينة حتى الآن',
       'ستظهر الطلبات المعينة لك هنا.',
       'ستظهر أرباحك هنا.',
       'سيكون تتبع الموقع متاحاً قريباً.',
-      'معلومات الحساب',
-      'البريد الإلكتروني',
-      'الحالة',
-      'تم تسجيل الدخول',
-      'بيانات تجريبية فقط',
-      'متصل',
-      'غير متصل',
-      'English',
-      'اردو',
-      'العربية',
-      'العميل',
-      'الهاتف',
-      'عنوان التوصيل',
-      'المبلغ',
-      'الدفع',
-      'حالة الطلب',
-      'تحديث الحالة',
-      'اتصل بالعميل',
-      'افتح الخريطة',
-      'تفاصيل الطلب',
-      'جار تحميل الطلبات...',
-      'تعذر تحميل الطلبات.',
+      'معلومات الحساب', 'البريد الإلكتروني', 'الحالة',
+      'تم تسجيل الدخول', 'بيانات تجريبية فقط', 'متصل',
+      'غير متصل', 'English', 'اردو', 'العربية',
+      'العميل', 'الهاتف', 'عنوان التوصيل', 'المبلغ',
+      'الدفع', 'حالة الطلب', 'تحديث الحالة',
+      'اتصل بالعميل', 'افتح الخريطة', 'تفاصيل الطلب',
+      'جار تحميل الطلبات...', 'تعذر تحميل الطلبات.',
       'لا توجد طلبات معينة لحسابك.',
       'تم تحديث الحالة بنجاح.',
       'فشل التحديث. حاول مرة أخرى.',
-      'اختر الحالة',
-      'قيد المعالجة',
-      'تم التأكيد',
-      'تم التغليف',
-      'تم الشحن',
-      'خرج للتوصيل',
-      'تم التوصيل',
-      'مكتمل',
-      'ملغى',
-      'مرتجع',
-      'رقم الطلب',
+      'اختر الحالة', 'قيد المعالجة', 'تم التأكيد',
+      'تم التغليف', 'تم الشحن', 'خرج للتوصيل',
+      'تم التوصيل', 'مكتمل', 'ملغى', 'مرتجع',
+      'رقم الطلب'
     ],
   };
 }
@@ -276,7 +171,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final email = TextEditingController();
   final password = TextEditingController();
-
   bool loading = false;
   String? error;
 
@@ -507,26 +401,16 @@ class _RiderDashboardState extends State<RiderDashboard> {
 
   String statusText(String status, List<String> t) {
     switch (status) {
-      case 'Processing':
-        return t[53];
-      case 'Confirmed':
-        return t[54];
-      case 'Packed':
-        return t[55];
-      case 'Shipped':
-        return t[56];
-      case 'Out for Delivery':
-        return t[57];
-      case 'Delivered':
-        return t[58];
-      case 'Completed':
-        return t[59];
-      case 'Cancelled':
-        return t[60];
-      case 'Returned':
-        return t[61];
-      default:
-        return status;
+      case 'Processing': return t[53];
+      case 'Confirmed': return t[54];
+      case 'Packed': return t[55];
+      case 'Shipped': return t[56];
+      case 'Out for Delivery': return t[57];
+      case 'Delivered': return t[58];
+      case 'Completed': return t[59];
+      case 'Cancelled': return t[60];
+      case 'Returned': return t[61];
+      default: return status;
     }
   }
 
@@ -641,10 +525,7 @@ class _RiderDashboardState extends State<RiderDashboard> {
                 ),
               ),
             const SizedBox(height: 8),
-            Text(
-              t[42],
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text(t[42], style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               value: allowedStatuses.contains(status) ? status : null,
@@ -670,84 +551,21 @@ class _RiderDashboardState extends State<RiderDashboard> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final t = Words.data[widget.language]!;
-    final rtl = widget.language != 'en';
-
-    final pages = [
-      dashboard(t),
-      ordersPage(t),
-      earnings(t),
-      location(t),
-      profile(t),
-    ];
-
-    return Directionality(
-      textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(t[0]),
-          actions: [
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.language),
-              onSelected: widget.onLanguageChanged,
-              itemBuilder: (context) => const [
-                PopupMenuItem(value: 'en', child: Text('English')),
-                PopupMenuItem(value: 'ur', child: Text('اردو')),
-                PopupMenuItem(value: 'ar', child: Text('العربية')),
-              ],
-            ),
-            IconButton(
-              tooltip: t[11],
-              icon: const Icon(Icons.logout),
-              onPressed: () => FirebaseAuth.instance.signOut(),
-            ),
-          ],
-        ),
-        body: SafeArea(child: pages[selected]),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: selected,
-          onDestinationSelected: (value) {
-            setState(() => selected = value);
-          },
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(Icons.dashboard_outlined),
-              selectedIcon: const Icon(Icons.dashboard),
-              label: t[13],
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.receipt_long),
-              label: t[14],
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.account_balance_wallet),
-              label: t[15],
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.location_on),
-              label: t[16],
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.person),
-              label: t[17],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget dashboard(List<String> t) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: myOrdersQuery.snapshots(),
       builder: (context, snapshot) {
-        final docs = snapshot.data?.docs ?? [];
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text(t[48]));
+        }
 
+        final docs = snapshot.data?.docs ?? [];
         final completed = docs.where((d) {
-          final s = d.data()['status'];
-          return s == 'Delivered' || s == 'Completed';
+          return valueOf(d.data(), 'status') == 'Completed' ||
+              valueOf(d.data(), 'status') == 'Delivered';
         }).length;
 
         final pending = docs.length - completed;
@@ -755,222 +573,17 @@ class _RiderDashboardState extends State<RiderDashboard> {
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    t[12],
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    widget.user.email ?? '',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            if (snapshot.hasError)
-              Text(
-                '${t[48]} ${snapshot.error}',
-                style: const TextStyle(color: Colors.red),
-              ),
-            Row(
-              children: [
-                Expanded(
-                  child: statCard(
-                    Icons.inventory_2,
-                    t[18],
-                    snapshot.hasData ? '${docs.length}' : '...',
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: statCard(
-                    Icons.check_circle,
-                    t[19],
-                    snapshot.hasData ? '$completed' : '...',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: statCard(
-                    Icons.pending_actions,
-                    t[20],
-                    snapshot.hasData ? '$pending' : '...',
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: statCard(Icons.wallet, t[15], '${t[21]} 0'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 22),
             Text(
-              t[14],
-              style: const TextStyle(
-                fontSize: 19,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            if (snapshot.connectionState == ConnectionState.waiting)
-              Center(child: Text(t[47]))
-            else if (snapshot.hasError)
-              Text(t[48], style: const TextStyle(color: Colors.red))
-            else if (docs.isEmpty)
-              emptyCard(Icons.inbox, t[22], t[23])
-            else
-              ...docs.take(3).map((d) => orderCard(d, t)),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget ordersPage(List<String> t) {
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: myOrdersQuery.snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: Text(t[47]));
-        }
-
-        if (snapshot.hasError) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                '${t[48]}\n${snapshot.error}',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.red),
-              ),
-            ),
-          );
-        }
-
-        final docs = snapshot.data?.docs ?? [];
-
-        if (docs.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: emptyCard(Icons.inbox, t[22], t[49]),
-            ),
-          );
-        }
-
-        return ListView(
-          padding: const EdgeInsets.all(16),
-          children: docs.map((d) => orderCard(d, t)).toList(),
-        );
-      },
-    );
-  }
-
-  Widget earnings(List<String> t) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: emptyCard(
-          Icons.account_balance_wallet,
-          t[15],
-          t[24],
-        ),
-      ),
-    );
-  }
-
-  Widget location(List<String> t) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: emptyCard(
-          Icons.location_on,
-          t[16],
-          t[25],
-        ),
-      ),
-    );
-  }
-
-  Widget profile(List<String> t) {
-    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: FirebaseFirestore.instance
-          .collection('riders')
-          .doc(widget.user.uid)
-          .snapshots(),
-      builder: (context, snapshot) {
-        final data = snapshot.data?.data() ?? {};
-        final name = valueOf(data, 'name');
-
-        return ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            const CircleAvatar(
-              radius: 42,
-              child: Icon(Icons.person, size: 48),
+              t[12],
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 18),
-            Text(
-              name.isEmpty ? t[17] : name,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 21,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.email),
-                title: Text(t[27]),
-                subtitle: Text(widget.user.email ?? '-'),
-              ),
-            ),
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.verified_user),
-                title: Text(t[28]),
-                subtitle: Text(
-                  data['active'] == true ? t[31] : t[32],
-                ),
-              ),
-            ),
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.phone),
-                title: Text(t[37]),
-                subtitle: Text(valueOf(data, 'phone').isEmpty
-                    ? '-'
-                    : valueOf(data, 'phone')),
-              ),
-            ),
-            const SizedBox(height: 18),
-            FilledButton.icon(
-              onPressed: () => FirebaseAuth.instance.signOut(),
-              icon: const Icon(Icons.logout),
-              label: Text(t[11]),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              childAspectRatio: 1.25,
+              children: [
+                statCard(Icons.receipt_long, t[18], '${docs.length}'),
+                statCard(Icons.check_circle, t[19], '$completed'),
+         
