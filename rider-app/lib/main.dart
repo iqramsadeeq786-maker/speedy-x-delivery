@@ -586,4 +586,199 @@ class _RiderDashboardState extends State<RiderDashboard> {
               children: [
                 statCard(Icons.receipt_long, t[18], '${docs.length}'),
                 statCard(Icons.check_circle, t[19], '$completed'),
-         
+         statCard(Icons.pending_actions, t[20], '$pending'),
+                statCard(Icons.delivery_dining, t[14], '${docs.length}'),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (docs.isEmpty)
+              emptyCard(Icons.inbox, t[22], t[23])
+            else
+              ...docs.take(3).map((d) => orderCard(d, t)),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget ordersPage(List<String> t) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: myOrdersQuery.snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: Text(t[47]));
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text('${t[48]}\n${snapshot.error}'),
+            ),
+          );
+        }
+
+        final docs = snapshot.data?.docs ?? [];
+
+        if (docs.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: emptyCard(Icons.inbox, t[22], t[49]),
+              ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: docs.length,
+          itemBuilder: (context, index) {
+            return orderCard(docs[index], t);
+          },
+        );
+      },
+    );
+  }
+
+  Widget earnings(List<String> t) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: emptyCard(Icons.account_balance_wallet, t[15], t[24]),
+      ),
+    );
+  }
+
+  Widget location(List<String> t) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: emptyCard(Icons.location_on, t[16], t[25]),
+      ),
+    );
+  }
+
+  Widget profile(List<String> t) {
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('riders')
+          .doc(widget.user.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        final data = snapshot.data?.data() ?? {};
+        final name = data['name']?.toString() ?? 'Rider';
+        final active = data['active'] == true;
+
+        return ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            const CircleAvatar(
+              radius: 45,
+              child: Icon(Icons.person, size: 55),
+            ),
+            const SizedBox(height: 15),
+            Center(
+              child: Text(
+                name,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            const SizedBox(height: 22),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.email),
+                title: Text(t[27]),
+                subtitle: Text(widget.user.email ?? ''),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.verified_user),
+                title: Text(t[28]),
+                subtitle: Text(active ? t[31] : t[32]),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.info_outline),
+                title: Text(t[26]),
+                subtitle: Text(t[29]),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Words.data[widget.language]!;
+    final rtl = widget.language != 'en';
+
+    final pages = [
+      dashboard(t),
+      ordersPage(t),
+      earnings(t),
+      location(t),
+      profile(t),
+    ];
+
+    return Directionality(
+      textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(t[0]),
+          actions: [
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.language),
+              onSelected: widget.onLanguageChanged,
+              itemBuilder: (context) => const [
+                PopupMenuItem(value: 'en', child: Text('English')),
+                PopupMenuItem(value: 'ur', child: Text('اردو')),
+                PopupMenuItem(value: 'ar', child: Text('العربية')),
+              ],
+            ),
+            IconButton(
+              tooltip: t[11],
+              icon: const Icon(Icons.logout),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+              },
+            ),
+          ],
+        ),
+        body: pages[selected],
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: selected,
+          onDestinationSelected: (index) {
+            setState(() => selected = index);
+          },
+},
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Icons.dashboard),
+              label: t[13],
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.receipt_long),
+              label: t[14],
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.account_balance_wallet),
+              label: t[15],
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.location_on),
+              label: t[16],
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.person),
+              label: t[17],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
